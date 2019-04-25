@@ -15,8 +15,10 @@
 
 
   <ItemGroup>
-    <Folder Include="Areas\Inventory\Data\" />
-    <Folder Include="Areas\Inventory\Models\" />
+    <Folder Include="Models\About\" />
+    <Folder Include="Models\Home\" />
+    <Folder Include="Models\Inventory\" />
+    <Folder Include="Models\Services\" />
   </ItemGroup>
 
 </Project>

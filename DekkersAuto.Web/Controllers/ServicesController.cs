@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DekkersAuto.Web.Areas.Inventory.Controllers
+namespace DekkersAuto.Web.Controllers
 {
-    public class InventoryController : Controller
+    public class ServicesController : Controller
     {
         public IActionResult Index()
         {

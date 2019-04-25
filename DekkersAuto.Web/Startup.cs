@@ -49,8 +49,7 @@ namespace DekkersAuto.Web
                options.Password.RequiredLength = 8;
                options.Password.RequireNonAlphanumeric = false;
                options.Password.RequireUppercase = true;
-               options.Password.RequireLowercase = false;
-               options.Password.RequiredUniqueChars = 6;
+               options.Password.RequireLowercase = true;
            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
