@@ -2,7 +2,7 @@
 
 namespace DekkersAuto.Web.Data.Migrations
 {
-    public partial class carupdate : Migration
+    public partial class modelmakeupdate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

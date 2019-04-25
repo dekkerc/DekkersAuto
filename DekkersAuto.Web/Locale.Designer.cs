@@ -70,6 +70,15 @@ namespace DekkersAuto.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to From.
+        /// </summary>
+        public static string From {
+            get {
+                return ResourceManager.GetString("From", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kilometers.
         /// </summary>
         public static string Kilometers {
@@ -93,6 +102,15 @@ namespace DekkersAuto.Web {
         public static string ServiceDescription {
             get {
                 return ResourceManager.GetString("ServiceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To.
+        /// </summary>
+        public static string To {
+            get {
+                return ResourceManager.GetString("To", resourceCulture);
             }
         }
         

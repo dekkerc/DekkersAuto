@@ -6,37 +6,50 @@
     </div>
     <div class="collapse" id="filterBody">
         <div class="card-body">
-            <form asp-action="Filter" asp-controller="Inventory">
-                <div class="col-lg-6">
-                    <div class="form-group form-inline">
-                        <label asp-for="Make"></label>
-                        <select asp-for="Make" asp-items="Model.MakeList"></select>
+            <form asp-action="Filter" asp-controller="Inventory" data-ajax="true" data-ajax-method="POST" data-ajax-update="#inventoryList" data-ajax-mode="replace">
+                <div class="row">
+
+                    <div class="col-lg-6">
+                        <div class="form-group form-inline">
+                            <label asp-for="Make" class="control-label col-2"></label>
+                            <select asp-for="Make" asp-items="Model.MakeList" class="form-control col-4"></select>
+                        </div>
+                        <div class="form-group form-inline">
+                            <label asp-for="Model" class="control-label col-2"></label>
+                            <select asp-for="Model" asp-items="Model.ModelList" class="form-control col-4"></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-6">@Locale.Kilometers</label>
+                            <br />
+                            <div class="form-inline">
+                                <label asp-for="KilometersFrom" class="control-label col-2"></label>
+                                <input asp-for="KilometersFrom" class="form-control col-2" />
+                            </div>
+                            <br />
+                            <div class="form-inline">
+                                <label asp-for="KilometersTo" class="control-label col-2"></label>
+                                <input asp-for="KilometersTo" class="form-control col-2" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group form-inline">
-                        <label asp-for="Model"></label>
-                        <select asp-for="Model" asp-items="Model.ModelList"></select>
-                    </div>
-                    <div class="form-group form-inline">
-                        <label>@Locale.Kilometers: </label>
-                        <label asp-for="KilometersFrom"></label>
-                        <input asp-for="KilometersFrom" />
-                        -
-                        <label asp-for="KilometersTo"></label>
-                        <input asp-for="KilometersTo" />
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="form-group form-inline">
-                        <label asp-for="Colour"></label>
-                        <select asp-for="Colour" asp-items="Model.ColourList"></select>
-                    </div>
-                    <div class="form-group form-inline">
-                        <label>@Locale.Year: </label>
-                        <label asp-for="YearFrom"></label>
-                        <input asp-for="YearFrom" />
-                        -
-                        <label asp-for="YearTo"></label>
-                        <input asp-for="YearTo" />
+                    <div class="col-lg-6">
+                        <div class="form-group form-inline">
+                            <label asp-for="Colour" class="control-label col-2"></label>
+                            <select asp-for="Colour" asp-items="Model.ColourList" class="form-control col-4"></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-6">@Locale.Year</label>
+                            <br />
+                            <div class="form-inline">
+                                <label asp-for="YearFrom" class="control-label col-2"></label>
+                                <input asp-for="YearFrom" class="form-control col-2" />
+                            </div>
+                            <br />
+                            <div class="form-inline">
+                                <label asp-for="YearTo" class="control-label col-2"></label>
+                                <input asp-for="YearTo" class="form-control col-2" />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <input type="submit" value="Filter" class="btn btn-primary" />

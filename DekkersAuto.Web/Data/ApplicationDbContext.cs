@@ -18,8 +18,9 @@ namespace DekkersAuto.Web.Data
         public DbSet<Car> Cars { get; set; }
         public DbSet<Listing> Listings { get; set; }
         public DbSet<Image> Images { get; set; }
-        public DbSet<Make> Makes { get; set; }
+        public DbSet<Option> Options { get; set; }
         public DbSet<Model> Models { get; set; }
-        
+        public DbSet<Make> Makes { get; set; }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace DekkersAuto.Web.Models.Inventory
         /// Gets and sets the Make
         /// Represents the make of the vehicle to filter by
         /// </summary>
-        public string Make { get; set; }
+        public Guid? Make { get; set; }
         /// <summary>
         /// Gets and sets the MakeList
         /// Represents the list of makes to select from
@@ -25,7 +26,7 @@ namespace DekkersAuto.Web.Models.Inventory
         /// Gets and sets the Model
         /// Represents the model to filter on
         /// </summary>
-        public string Model { get; set; }
+        public Guid? Model { get; set; }
         /// <summary>
         /// Gets and sets the ModelList 
         /// Represents the ModelList to select from
@@ -45,21 +46,25 @@ namespace DekkersAuto.Web.Models.Inventory
         /// Gets and sets the YearFrom
         /// Represents the low end of a year filter range
         /// </summary>
-        public int YearFrom { get; set; }
+        [Display(Name = "From", ResourceType = typeof(Locale))]
+        public int? YearFrom { get; set; }
         /// <summary>
         /// Gets and sets the YearTo 
         /// Represents the upper end of a year filter range
         /// </summary>
-        public int YearTo { get; set; }
+        [Display(Name = "To", ResourceType = typeof(Locale))]
+        public int? YearTo { get; set; }
         /// <summary>
         /// Gets and sets the KilometersFrom
         /// Represents the low end of the kilometer filter range
         /// </summary>
-        public int KilometersFrom { get; set; }
+        [Display(Name ="From", ResourceType = typeof(Locale))]
+        public int? KilometersFrom { get; set; }
         /// <summary>
         /// Gets and sets the KilometersTo
         /// Represents the upper end of the kilometer filter range
         /// </summary>
-        public int KilometersTo { get; set; }
+        [Display(Name = "To", ResourceType = typeof(Locale))]
+        public int? KilometersTo { get; set; }
     }
 }
