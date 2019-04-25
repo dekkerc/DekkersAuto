@@ -58,7 +58,7 @@ namespace DekkersAuto.Web.Models.Inventory
         public int KilometersFrom { get; set; }
         /// <summary>
         /// Gets and sets the KilometersTo
-        /// Represents tehe upper end of the kilometer filter range
+        /// Represents the upper end of the kilometer filter range
         /// </summary>
         public int KilometersTo { get; set; }
     }
