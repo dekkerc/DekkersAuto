@@ -70,11 +70,38 @@ namespace DekkersAuto.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kilometers.
+        /// </summary>
+        public static string Kilometers {
+            get {
+                return ResourceManager.GetString("Kilometers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no vehicles to display.
+        /// </summary>
+        public static string NoInventoryMessage {
+            get {
+                return ResourceManager.GetString("NoInventoryMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to We offer a variety of car services, from oil changes and 30-point inspections to diagnosis and repair. Please inquire below if you are interested in booking an appointment..
         /// </summary>
         public static string ServiceDescription {
             get {
                 return ResourceManager.GetString("ServiceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year.
+        /// </summary>
+        public static string Year {
+            get {
+                return ResourceManager.GetString("Year", resourceCulture);
             }
         }
     }

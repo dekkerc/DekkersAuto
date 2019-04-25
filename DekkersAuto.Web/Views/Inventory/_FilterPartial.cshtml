@@ -1,1 +1,46 @@
-﻿
+﻿@model DekkersAuto.Web.Models.Inventory.FilterViewModel
+
+<div class="card">
+    <div class="card-header">
+        <a data-toggle="collapse" href="#filterBody" role="button" aria-expanded="false" aria-controls="filterBody">Filter</a>
+    </div>
+    <div class="collapse" id="filterBody">
+        <div class="card-body">
+            <form asp-action="Filter" asp-controller="Inventory">
+                <div class="col-lg-6">
+                    <div class="form-group form-inline">
+                        <label asp-for="Make"></label>
+                        <select asp-for="Make" asp-items="Model.MakeList"></select>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label asp-for="Model"></label>
+                        <select asp-for="Model" asp-items="Model.ModelList"></select>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label>@Locale.Kilometers: </label>
+                        <label asp-for="KilometersFrom"></label>
+                        <input asp-for="KilometersFrom" />
+                        -
+                        <label asp-for="KilometersTo"></label>
+                        <input asp-for="KilometersTo" />
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group form-inline">
+                        <label asp-for="Colour"></label>
+                        <select asp-for="Colour" asp-items="Model.ColourList"></select>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label>@Locale.Year: </label>
+                        <label asp-for="YearFrom"></label>
+                        <input asp-for="YearFrom" />
+                        -
+                        <label asp-for="YearTo"></label>
+                        <input asp-for="YearTo" />
+                    </div>
+                </div>
+                <input type="submit" value="Filter" class="btn btn-primary" />
+            </form>
+        </div>
+    </div>
+</div>

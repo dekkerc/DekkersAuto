@@ -1,4 +1,4 @@
-﻿
+﻿@model DekkersAuto.Web.Models.Inventory.InventoryViewModel
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,7 +6,6 @@
 
 <h1>Inventory</h1>
 
-<partial name="_FilterPartial" />
+<partial name="_FilterPartial" model="Model.Filter" />
 
-
-
+<partial name="_InventoryListPartial" model="Model.InventoryList" />
