@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DekkersAuto.Web.Controllers
 {
-    [Authorize(Roles ="Admin")]
     public class AboutController : Controller
     {
         public IActionResult Index()
