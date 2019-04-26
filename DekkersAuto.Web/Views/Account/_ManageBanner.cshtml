@@ -1,0 +1,23 @@
+﻿@model DekkersAuto.Web.Models.Account.BannerViewModel
+
+<div class="card">
+    <h5 class="card-header"></h5>
+    <div class="card-body">
+        <form asp-action="ManageBanner" asp-controller="Account" data-ajax="true" data-ajax-mode="replace" data-ajax-target="#manageBanner">
+            <input asp-for="BannerId" hidden />
+            <input asp-for="IsActive" hidden />
+            <div class="form-group">
+                <label asp-for="Text" class="control-label"></label>
+                <textarea asp-for="Text" class="form-control"></textarea>
+            </div>
+            @if (Model.IsActive)
+            {
+                <input type="submit" class="btn btn-danger" value="Deactivate" />
+            }
+            else
+            {
+                <input type="submit" class="btn btn-primary" value="Activate" />
+            }
+        </form>
+    </div>
+</div>

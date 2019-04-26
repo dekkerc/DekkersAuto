@@ -1,0 +1,14 @@
+﻿@model DekkersAuto.Web.Models.Account.AccountItemViewModel
+
+<tr>
+    <td>
+        @Model.Username
+    </td>
+    <td>
+        @Model.Role
+    </td>
+    <td>
+        <a asp-action="Edit" asp-controller="Account" asp-all-route-data='new Dictionary<string, string> { { "userId",Model.AccountId.ToString()} }' class="btn btn-primary">Edit</a>
+        <a asp-action="Delete" asp-controller="Account" asp-all-route-data='new Dictionary<string, string> { { "userId",Model.AccountId.ToString()} }' class="btn btn-danger">Delete</a>
+    </td>
+</tr>

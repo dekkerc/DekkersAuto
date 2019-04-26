@@ -1,4 +1,4 @@
-﻿
+﻿@model DekkersAuto.Web.Models.Account.AccountViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @{
@@ -11,24 +11,17 @@
 <div class="card">
     <h5 class="card-header">Manage Account</h5>
     <div class="card-body">
-        This will be account management section
+        <partial name="Edit" model="Model.ManageAccountModel" />
     </div>
 </div>
 
-<div class="card">
-    <h5 class="card-header">Manage Banner</h5>
-    <div class="card-body">
-        This will be banner management section
-    </div>
+<div id="manageBanner">
+    <partial name="_ManageBanner" model="Model.BannerModel" />
 </div>
+
 @if (User.IsInRole("Admin"))
 {
 
-    <div class="card">
-        <h5 class="card-header">Manage Secretary Accounts</h5>
-        <div class="card-body">
-            This will be the Secretary account management section
-        </div>
-    </div>
+    
 
 }

@@ -52,8 +52,31 @@ namespace DekkersAuto.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var userTask = UserManager.GetUserAsync(User);
+
+            var model = new AccountViewModel();
+            var banner = _dbService.GetBanner();
+            var bannerModel = new BannerViewModel();
+            if(banner!= null)
+            {
+                bannerModel.BannerId = banner.Id;
+                bannerModel.IsActive = banner.IsActive;
+                bannerModel.Text = banner.Text;
+            }
+
+            var user = await userTask;
+
+            model.ManageAccountModel = new ManageAccountViewModel
+            {
+                Username = user.UserName,
+                Role = _dbService.GetRole(user),
+                RoleTypes = _dbService.GetRoles()
+            };
+
+
+
             return View();
         }
 
@@ -67,7 +90,7 @@ namespace DekkersAuto.Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var model = new CreateViewModel();
+            var model = new ManageAccountViewModel();
             model.RoleTypes = _dbService.GetRoles();
 
             return View(model);
@@ -81,7 +104,7 @@ namespace DekkersAuto.Web.Controllers
         /// <returns>Redirects to the Account index on success</returns>
         [HttpPost]
         [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> Create(CreateViewModel model)
+        public async Task<IActionResult> Create(ManageAccountViewModel model)
         {
 
             if (!ModelState.IsValid)

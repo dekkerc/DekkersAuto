@@ -1,0 +1,22 @@
+﻿@model DekkersAuto.Web.Models.Account.AccountListViewModel
+
+<div class="card">
+    <h5 class="card-header">Manage Accounts</h5>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">Role</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var account in Model.Accounts)
+                {
+                    <partial name="_AccountItem" model="account" />
+                }
+            </tbody>
+        </table>
+</div>
+</div>

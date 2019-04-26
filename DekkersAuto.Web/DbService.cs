@@ -81,7 +81,7 @@ namespace DekkersAuto.Web
         }
 
 
-        public async Task<bool> CreateUserAsync(string username, string password, Guid roleId)
+        public async Task<bool> CreateUserAsync(string username, string password, string roleId)
         {
             var user = new IdentityUser
             {
@@ -91,10 +91,22 @@ namespace DekkersAuto.Web
             if (result.Succeeded)
             {
                 var newUser = await UserManager.FindByNameAsync(user.UserName);
-                var role = _db.Roles.Find(roleId.ToString());
+                var role = _db.Roles.Find(roleId);
                 var roleResult = await UserManager.AddToRoleAsync(newUser, await RoleManager.GetRoleNameAsync(role));
             }
             return result.Succeeded;
+        }
+        
+
+        public Banner GetBanner()
+        {
+            var banner = _db.Banners.FirstOrDefault();
+            return banner;
+        }
+
+        public string GetRole(IdentityUser user)
+        {
+            return _db.UserRoles.SingleOrDefault(ur => ur.UserId == user.Id)?.RoleId;
         }
 
         public List<InventoryListItemViewModel> FilterListings(FilterViewModel model)
