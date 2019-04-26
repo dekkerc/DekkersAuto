@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DekkersAuto.Web.Data;
 using DekkersAuto.Web.Data.Models;
 using DekkersAuto.Web.Models.Inventory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,41 +15,86 @@ namespace DekkersAuto.Web.Controllers
 {
     public class InventoryController : Controller
     {
-        private ApplicationDbContext _db;
+        private DbService _dbService;
 
-        public InventoryController(ApplicationDbContext db)
+        public InventoryController(DbService service)
         {
-            _db = db;
+            _dbService = service;
         }
 
         public IActionResult Index()
         {
-            var model = new InventoryViewModel();
-
-            model.Filter = new FilterViewModel
+            var model = new InventoryViewModel
             {
-                ModelList = _db.Models.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Name }).ToList(),
-                MakeList = _db.Makes.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Name }).ToList(),
-                ColourList = Util.GetColours()
+                Filter = new FilterViewModel
+                {
+                    ModelList = _dbService.GetModelList(),
+                    MakeList = _dbService.GetMakeList(),
+                    ColourList = Util.GetColours()
+                },
+
+                InventoryList = _dbService.GetInventoryList()
             };
 
-            model.InventoryList = _db.Listings
-                .Include(l => l.Car)
-                .Include(l => l.Images)
-                .Select(l => new InventoryListItemViewModel
-                {
-                    ListingId = l.Id,
-                    Description = l.Description,
-                    ImageUrl = l.Images.SingleOrDefault(i => i.IsFeature).ImageString,
-                    Title = l.Title,
-                    Year = l.Car.Year,
-                    Kilometers = l.Car.Kilometers
-                })
-                .ToList();
-            
 
             return View(model);
         }
+
+        /// <summary>
+        /// Action to display the create page. Only available to signed in users
+        /// </summary>
+        /// <returns>The create page</returns>
+        [HttpGet, Authorize]
+        public IActionResult Create()
+        {
+            var viewModel = new CreateInventoryViewModel
+            {
+                ColourList = Util.GetColours(),
+                MakeList = _dbService.GetMakeList(),
+                ModelList = _dbService.GetModelList(),
+                TransmissionList = Util.GetTransmissions()
+            };
+
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// Action to create a new inventory item.
+        /// </summary>
+        /// <param name="model">Inventory model used to create new listing</param>
+        /// <returns>Redirects to the inventory view</returns>
+        [HttpPost, Authorize]
+        public async Task<IActionResult> Create(CreateInventoryViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            var listing = new Listing
+            {
+                Title = viewModel.Title,
+                Description = viewModel.Description,
+                Car = new Car
+                {
+                    Make = viewModel.Make,
+                    Model = viewModel.Model,
+                    BodyType = viewModel.BodyType,
+                    Colour = viewModel.Colour,
+                    FuelType = viewModel.FuelType,
+                    Doors = viewModel.Doors,
+                    Seats = viewModel.Seats,
+                    Kilometers = viewModel.Kilometers,
+                    Transmission = viewModel.Transmission,
+                    Year = viewModel.Year
+                }
+            };
+
+            await _dbService.AddListingAsync(listing);
+            
+            return RedirectToAction("Index");
+        }
+
 
         /// <summary>
         /// Action to filter the displayed listings by the parameters outlined in the filterviewmodel
@@ -58,46 +104,9 @@ namespace DekkersAuto.Web.Controllers
         [HttpPost]
         public IActionResult Filter(FilterViewModel model)
         {
-            var inventory = _db.Listings.Include(l => l.Car).Include(l => l.Images).ToList();
-
-            if(model.Colour != "")
-            {
-                inventory = inventory.Where(l => l.Car.Colour == model.Colour).ToList();
-            }
-            if (model.Make.HasValue)
-            {
-                inventory = inventory.Where(l => l.Car.Make == _db.Makes.Find(model.Make).Name).ToList();
-            }
-            if (model.Model.HasValue)
-            {
-                inventory = inventory.Where(l => l.Car.Model == _db.Models.Find(model.Model).Name).ToList();
-            }
-            if (model.KilometersFrom.HasValue && model.KilometersFrom > 0)
-            {
-                inventory = inventory.Where(l => l.Car.Kilometers >= model.KilometersFrom).ToList();
-            }
-            if (model.KilometersTo.HasValue && model.KilometersTo > 0)
-            {
-                inventory = inventory.Where(l => l.Car.Kilometers <= model.KilometersTo).ToList();
-            }
-            if (model.YearFrom.HasValue && model.YearFrom > 0)
-            {
-                inventory = inventory.Where(l => l.Car.Year >= model.YearFrom).ToList();
-            }
-            if (model.YearTo.HasValue && model.YearTo > 0)
-            {
-                inventory = inventory.Where(l => l.Car.Year <= model.YearTo).ToList();
-            }
-
-            return PartialView("_InventoryListPartial", inventory.Select(l => new InventoryListItemViewModel
-            {
-                Description = l.Description,
-                ImageUrl = l.Images.SingleOrDefault(i => i.IsFeature)?.ImageString,
-                Kilometers = l.Car.Kilometers,
-                Year = l.Car.Year,
-                Title = l.Title,
-                ListingId = l.Id
-            }));
+            var result = _dbService.FilterListings(model);
+            
+            return PartialView("_InventoryListPartial", result);
         }
     }
 }

@@ -70,11 +70,38 @@ namespace DekkersAuto.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Body Type.
+        /// </summary>
+        public static string BodyType {
+            get {
+                return ResourceManager.GetString("BodyType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drive Train.
+        /// </summary>
+        public static string DriveTrain {
+            get {
+                return ResourceManager.GetString("DriveTrain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to From.
         /// </summary>
         public static string From {
             get {
                 return ResourceManager.GetString("From", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fuel Type.
+        /// </summary>
+        public static string FuelType {
+            get {
+                return ResourceManager.GetString("FuelType", resourceCulture);
             }
         }
         

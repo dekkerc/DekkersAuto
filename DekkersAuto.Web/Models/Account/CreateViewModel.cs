@@ -34,6 +34,6 @@ namespace DekkersAuto.Web.Models.Account
         /// Represents the role the user will be created with. Determines the permissions available to the user
         /// </summary>
         [Required]
-        public string Role { get; set; }
+        public Guid Role { get; set; }
     }
 }

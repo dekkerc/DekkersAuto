@@ -35,6 +35,7 @@ namespace DekkersAuto.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -51,6 +52,8 @@ namespace DekkersAuto.Web
                options.Password.RequireUppercase = true;
                options.Password.RequireLowercase = true;
            });
+
+            services.AddScoped<DbService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

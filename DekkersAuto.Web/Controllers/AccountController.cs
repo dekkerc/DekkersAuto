@@ -32,22 +32,26 @@ namespace DekkersAuto.Web.Controllers
         /// </summary>
         private SignInManager<IdentityUser> SignInManager { get; set; }
 
+        private DbService _dbService;
+
         /// <summary>
         /// Default constructor. Has services passed in through dependency injection
         /// </summary>
         /// <param name="userManager">The user manager for IdentityUsers</param>
         /// <param name="roleManager">The role manager for IdentityRoles</param>
-        public AccountController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager, DbService dbService)
         {
             UserManager = userManager;
             RoleManager = roleManager;
             SignInManager = signInManager;
+            _dbService = dbService;
         }
 
         /// <summary>
         /// Default action, returns the management homepage 
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public IActionResult Index()
         {
             return View();
@@ -59,12 +63,12 @@ namespace DekkersAuto.Web.Controllers
         /// Populates the Create model with the available user roles
         /// </summary>
         /// <returns>The create view</returns>
-        [HttpGet]
         [Authorize(Roles = "Admin")]
+        [HttpGet]
         public IActionResult Create()
         {
             var model = new CreateViewModel();
-            GetRoles(model);
+            model.RoleTypes = _dbService.GetRoles();
 
             return View(model);
         }
@@ -76,25 +80,16 @@ namespace DekkersAuto.Web.Controllers
         /// <param name="model">Model containing details of user to create</param>
         /// <returns>Redirects to the Account index on success</returns>
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Create(CreateViewModel model)
         {
 
             if (!ModelState.IsValid)
             {
-                GetRoles(model);
+                model.RoleTypes = _dbService.GetRoles();
                 return View(model);
             }
-            var user = new IdentityUser
-            {
-                UserName = model.Username
-            };
-            var result = await UserManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                var newUser = await UserManager.FindByNameAsync(user.UserName);
-                var roleResult = UserManager.AddToRoleAsync(newUser, model.Role);
-            }
+            var result = await _dbService.CreateUserAsync(model.Username, model.Password, model.Role);
 
             return RedirectToAction("Index");
         }
@@ -149,17 +144,6 @@ namespace DekkersAuto.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private void GetRoles(CreateViewModel model)
-        {
-            model.RoleTypes = new List<SelectListItem>();
-            RoleManager.Roles.Select(r => r.Name).ToList().ForEach(r =>
-            {
-                model.RoleTypes.Add(new SelectListItem
-                {
-                    Text = r,
-                    Value = r
-                });
-            });
-        }
+       
     }
 }

@@ -120,8 +120,17 @@
   <data name="AboutDescription" xml:space="preserve">
     <value>Philip and Sandra Dekker, owners of Dekkers Auto, want to thank all their customers for their support in helping them achieve this milestone- 25 years in business! “We recognize that this is a big achievement for us! We started from very humble beginnings here in 1992. Without the support from our local community, friends and family and the over-reaching blessing of our Heavenly Father we would not be in business today!” says Sandra Dekker. Dekkers Auto opened it’s doors on October 1st 1992. Philip, rented the one hoist garage from the owner’s of the Korab Restaurant next door after being laid off from his previous employer where he worked as a heavy equipment mechanic. With a new baby in the family, he needed to find work and quickly. Feeling very unprepared, and ill equipped, but full of ambitions and encouraged by family members, the adventure began.  Over the years, much has changed. Dekkers Auto now operates with a four bay garage, three full time mechanics, 1 apprentice and 2 part time office staff who help the operation run smoothly.  Philip and Sandra also sell used vehicles, an addition to the business 13 years ago. In 2002 they had the opportunity to purchase the property, and have made a home here for their family of 5. “We have been a family operating a business- each of our children have had opportunities to learn how to work here, a good work ethic is something each one of them brings to their jobs today.” says proud Dad, Phil Dekker. The Dekker family is growing with an addition of a son-in-law (2013) and a grand daughter (2017).  As a family run operation, you will often find Phil and Sandra sitting side by side at the desk working away. The Dekkers Auto team includes a dedicated and talented staff. Colin joined Dekkers Auto in 1997 as an apprentice and is the shop manager and mechanic, he is the electrical/ technical specialist. Jordon has been with the company for 10 years, starting as an apprentice as well- today he does most of the commercial work as well as transmission and engine work. Dana is working on his apprenticeship here since 2016. Auto mechanics is constantly changing and all employees are consistently updating their skills through continuing education. The Dekkers Auto team also includes the office staff- Sandra- office administrator/book keeper, and Jacqueline- advertisements and office work. Philip continues to turn wrenches when he gets the chance. He also manages the used vehicle sales and overall operations at the garage. Much has changed over 25 years, but what remains the same is Philip and Sandra’s commitment to each customer.</value>
   </data>
+  <data name="BodyType" xml:space="preserve">
+    <value>Body Type</value>
+  </data>
+  <data name="DriveTrain" xml:space="preserve">
+    <value>Drive Train</value>
+  </data>
   <data name="From" xml:space="preserve">
     <value>From</value>
+  </data>
+  <data name="FuelType" xml:space="preserve">
+    <value>Fuel Type</value>
   </data>
   <data name="Kilometers" xml:space="preserve">
     <value>Kilometers</value>

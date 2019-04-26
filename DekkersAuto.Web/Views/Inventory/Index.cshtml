@@ -1,12 +1,19 @@
 ﻿@model DekkersAuto.Web.Models.Inventory.InventoryViewModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Inventory</h1>
-
 <partial name="_FilterPartial" model="Model.Filter" />
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="mx-auto">
+        <a asp-action="Create" asp-controller="Inventory" class="btn btn-primary">Add Listing</a>
+    </div>
+}
 
 <div id="inventoryList">
     <partial name="_InventoryListPartial" model="Model.InventoryList" />

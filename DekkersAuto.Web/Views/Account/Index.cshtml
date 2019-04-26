@@ -1,0 +1,34 @@
+﻿
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<div class="card">
+    <h5 class="card-header">Manage Account</h5>
+    <div class="card-body">
+        This will be account management section
+    </div>
+</div>
+
+<div class="card">
+    <h5 class="card-header">Manage Banner</h5>
+    <div class="card-body">
+        This will be banner management section
+    </div>
+</div>
+@if (User.IsInRole("Admin"))
+{
+
+    <div class="card">
+        <h5 class="card-header">Manage Secretary Accounts</h5>
+        <div class="card-body">
+            This will be the Secretary account management section
+        </div>
+    </div>
+
+}

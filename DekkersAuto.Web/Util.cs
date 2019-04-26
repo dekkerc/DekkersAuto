@@ -22,5 +22,20 @@ namespace DekkersAuto.Web
                 }
             };
         }
+
+        public static List<SelectListItem> GetTransmissions()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Text = "Auto"
+                },
+                new SelectListItem
+                {
+                    Text = "Manual"
+                }
+            };
+        }
     }
 }
