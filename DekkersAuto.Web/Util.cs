@@ -14,6 +14,11 @@ namespace DekkersAuto.Web
             {
                 new SelectListItem
                 {
+                    Text = "--Select Colour--",
+                    Value = ""
+                },
+                new SelectListItem
+                {
                     Text = "Red"
                 },
                 new SelectListItem

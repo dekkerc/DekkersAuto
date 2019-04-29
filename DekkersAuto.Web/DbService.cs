@@ -1,5 +1,6 @@
 ﻿using DekkersAuto.Web.Data;
 using DekkersAuto.Web.Data.Models;
+using DekkersAuto.Web.Models.Account;
 using DekkersAuto.Web.Models.Inventory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -36,12 +37,16 @@ namespace DekkersAuto.Web
 
         public List<SelectListItem> GetModelList()
         {
-            return _db.Models.Select(m => new SelectListItem { Text = m.Name }).ToList();
+            var modelList = new List<SelectListItem> { new SelectListItem { Text = "--Select Model--", Value = "" } };
+            modelList.AddRange(_db.Models.Select(m => new SelectListItem { Text = m.Name }));
+            return modelList;
         }
 
         public List<SelectListItem> GetMakeList()
         {
-            return _db.Makes.Select(m => new SelectListItem { Text = m.Name }).ToList();
+            var makeList = new List<SelectListItem> { new SelectListItem { Text = "--Select Make--", Value = "" } };
+            makeList.AddRange(_db.Makes.Select(m => new SelectListItem { Text = m.Name }));
+            return makeList;
         }
 
         public List<InventoryListItemViewModel> GetInventoryList()
@@ -64,6 +69,7 @@ namespace DekkersAuto.Web
         public async Task AddListingAsync(Listing listing)
         {
             await _db.Listings.AddAsync(listing);
+            await _db.SaveChangesAsync();
         }
 
         public List<SelectListItem> GetRoles()
@@ -96,12 +102,57 @@ namespace DekkersAuto.Web
             }
             return result.Succeeded;
         }
-        
+
+        public AccountListViewModel GetAccountList(string id)
+        {
+            var accountList = _db.UserRoles.Join(
+                _db.Users,
+                userRole => userRole.UserId,
+                user => user.Id,
+                (userRole, user) => new
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    RoleId = userRole.RoleId
+                }).Join(
+                _db.Roles,
+                user => user.RoleId,
+                role => role.Id,
+                (user, role) => new
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    Role = role.Name
+                })
+                .Where(u => u.Id != id)
+                .Select(u => new AccountItemViewModel { AccountId = u.Id, Username = u.Username, Role = u.Role })
+                .ToList();
+
+            return new AccountListViewModel
+            {
+                UserId = id,
+                Accounts = accountList
+            };
+        }
 
         public Banner GetBanner()
         {
             var banner = _db.Banners.FirstOrDefault();
             return banner;
+        }
+        public void CreateBanner(BannerViewModel model)
+        {
+            _db.Banners.Add(new Banner { Text = model.Text, IsActive = true });
+            _db.SaveChanges();
+        }
+        public void UpdateBanner(BannerViewModel model)
+        {
+            var banner = _db.Banners.Find(model.BannerId);
+
+            banner.Text = model.Text;
+            banner.IsActive = model.IsActive;
+            _db.Banners.Update(banner);
+            _db.SaveChanges();
         }
 
         public string GetRole(IdentityUser user)
@@ -109,21 +160,34 @@ namespace DekkersAuto.Web
             return _db.UserRoles.SingleOrDefault(ur => ur.UserId == user.Id)?.RoleId;
         }
 
+        public void SeedMakes()
+        {
+
+            _db.Models.AddRange(new List<Model>
+            {
+                new Model{ Name = "Focus", Make = _db.Makes.Single(m => m.Name == "Ford")},
+                new Model{ Name = "Cobalt", Make = _db.Makes.Single(m => m.Name == "Chevrolet")},
+                new Model{ Name = "Rio", Make = _db.Makes.Single(m => m.Name == "Kia")},
+                new Model{ Name = "Matrix", Make = _db.Makes.Single(m => m.Name == "Toyota")}
+            });
+            _db.SaveChanges();
+        }
+
         public List<InventoryListItemViewModel> FilterListings(FilterViewModel model)
         {
             var inventory = _db.Listings.Include(l => l.Car).Include(l => l.Images).ToList();
 
-            if (model.Colour != "")
+            if (model.Colour != null)
             {
                 inventory = inventory.Where(l => l.Car.Colour == model.Colour).ToList();
             }
-            if (model.Make.HasValue)
+            if (model.Make != null)
             {
-                inventory = inventory.Where(l => l.Car.Make == _db.Makes.Find(model.Make).Name).ToList();
+                inventory = inventory.Where(l => l.Car.Make == model.Make).ToList();
             }
-            if (model.Model.HasValue)
+            if (model.Model != null)
             {
-                inventory = inventory.Where(l => l.Car.Model == _db.Models.Find(model.Model).Name).ToList();
+                inventory = inventory.Where(l => l.Car.Model == model.Model).ToList();
             }
             if (model.KilometersFrom.HasValue && model.KilometersFrom > 0)
             {

@@ -16,7 +16,7 @@ namespace DekkersAuto.Web.Models.Inventory
         /// Gets and sets the Make
         /// Represents the make of the vehicle to filter by
         /// </summary>
-        public Guid? Make { get; set; }
+        public string Make { get; set; }
         /// <summary>
         /// Gets and sets the MakeList
         /// Represents the list of makes to select from
@@ -26,7 +26,7 @@ namespace DekkersAuto.Web.Models.Inventory
         /// Gets and sets the Model
         /// Represents the model to filter on
         /// </summary>
-        public Guid? Model { get; set; }
+        public string Model { get; set; }
         /// <summary>
         /// Gets and sets the ModelList 
         /// Represents the ModelList to select from

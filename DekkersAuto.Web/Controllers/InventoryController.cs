@@ -99,12 +99,12 @@ namespace DekkersAuto.Web.Controllers
         /// <summary>
         /// Action to filter the displayed listings by the parameters outlined in the filterviewmodel
         /// </summary>
-        /// <param name="model">Model containing parameters to filter on</param>
+        /// <param name="viewModel">Model containing parameters to filter on</param>
         /// <returns>Updated partial view with filtered results</returns>
         [HttpPost]
-        public IActionResult Filter(FilterViewModel model)
+        public IActionResult Filter(FilterViewModel viewModel)
         {
-            var result = _dbService.FilterListings(model);
+            var result = _dbService.FilterListings(viewModel);
             
             return PartialView("_InventoryListPartial", result);
         }

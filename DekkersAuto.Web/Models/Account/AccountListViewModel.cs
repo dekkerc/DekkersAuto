@@ -14,7 +14,7 @@ namespace DekkersAuto.Web.Models.Account
         /// Gets and sets the UserId
         /// Represents the Id of the logged in user
         /// </summary>
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         /// <summary>
         /// Gets and sets the Accounts
         /// Represents the list of accounts the logged in user can manage

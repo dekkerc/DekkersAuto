@@ -10,13 +10,13 @@
                 <label asp-for="Text" class="control-label"></label>
                 <textarea asp-for="Text" class="form-control"></textarea>
             </div>
-            @if (Model.IsActive)
+            @if (Model == null || !Model.IsActive)
             {
-                <input type="submit" class="btn btn-danger" value="Deactivate" />
+                <input type="submit" class="btn btn-primary" value="Activate" />
             }
             else
             {
-                <input type="submit" class="btn btn-primary" value="Activate" />
+                <input type="submit" class="btn btn-danger" value="Deactivate" />
             }
         </form>
     </div>

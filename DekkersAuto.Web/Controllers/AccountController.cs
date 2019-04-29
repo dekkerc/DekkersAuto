@@ -54,7 +54,6 @@ namespace DekkersAuto.Web.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var userTask = UserManager.GetUserAsync(User);
 
             var model = new AccountViewModel();
             var banner = _dbService.GetBanner();
@@ -65,9 +64,9 @@ namespace DekkersAuto.Web.Controllers
                 bannerModel.IsActive = banner.IsActive;
                 bannerModel.Text = banner.Text;
             }
+            
 
-            var user = await userTask;
-
+            var user = await UserManager.GetUserAsync(User);
             model.ManageAccountModel = new ManageAccountViewModel
             {
                 Username = user.UserName,
@@ -75,9 +74,11 @@ namespace DekkersAuto.Web.Controllers
                 RoleTypes = _dbService.GetRoles()
             };
 
+            var accountList = _dbService.GetAccountList(user.Id);
 
+            model.AccountList = accountList;
 
-            return View();
+            return View(model);
         }
 
 
@@ -155,6 +156,21 @@ namespace DekkersAuto.Web.Controllers
                 }
             }
             return View(model);
+        }
+
+        public IActionResult ManageBanner(BannerViewModel model)
+        {
+
+            if (_dbService.GetBanner() == null)
+            {
+                _dbService.CreateBanner(model);
+            }
+            else
+            {
+                _dbService.UpdateBanner(model);
+            }
+
+            return PartialView("_ManageBanner", model);
         }
 
         /// <summary>
