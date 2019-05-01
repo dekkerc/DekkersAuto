@@ -1,5 +1,6 @@
 ﻿using DekkersAuto.Web.Data;
 using DekkersAuto.Web.Data.Models;
+using DekkersAuto.Web.Models;
 using DekkersAuto.Web.Models.Account;
 using DekkersAuto.Web.Models.Inventory;
 using Microsoft.AspNetCore.Identity;
@@ -214,6 +215,11 @@ namespace DekkersAuto.Web
                 Title = l.Title,
                 ListingId = l.Id
             }).ToList();
+        }
+
+        public async Task DeleteUserAsync(string userId)
+        {
+            await UserManager.DeleteAsync(await UserManager.FindByIdAsync(userId));
         }
     }
 

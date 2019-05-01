@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DekkersAuto.Web.Models.Account
+namespace DekkersAuto.Web.Models
 {
     /// <summary>
     /// Represents the properties required to view a banner record
@@ -14,7 +14,7 @@ namespace DekkersAuto.Web.Models.Account
         /// Gets and sets IsActive
         /// Represents whether the banner is active
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = false;
         /// <summary>
         /// Gets and sets the Text
         /// Represents the text that will be displayed in the banner

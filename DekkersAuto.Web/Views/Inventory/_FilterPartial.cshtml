@@ -1,8 +1,12 @@
 ﻿@model DekkersAuto.Web.Models.Inventory.FilterViewModel
-
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
 <div class="card">
-    <div class="card-header">
-        <a data-toggle="collapse" href="#filterBody" role="button" aria-expanded="false" aria-controls="filterBody">Filter</a>
+    <div class="card-header" data-toggle="collapse" href="#filterBody" aria-expanded="false" aria-controls="filterBody" style="cursor:pointer">
+        <h5>
+            Filter
+        </h5>
+
     </div>
     <div class="collapse" id="filterBody">
         <div class="card-body">

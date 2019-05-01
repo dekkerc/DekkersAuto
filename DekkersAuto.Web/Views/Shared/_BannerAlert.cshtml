@@ -1,0 +1,8 @@
+﻿@model DekkersAuto.Web.Models.BannerViewModel
+
+@if (Model.IsActive)
+{
+    <div class="alert alert-secondary col-12" role="alert">
+        @Model.Text
+    </div>
+}

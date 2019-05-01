@@ -14,13 +14,11 @@
         <partial name="Edit" model="Model.ManageAccountModel" />
     </div>
 </div>
-
-    <partial name="_ManageBanner" model="Model.BannerModel" />
-</div>
+<br />
+<partial name="_ManageBanner" model="Model.BannerModel" />
 
 @if (User.IsInRole("Admin"))
 {
-
-    
-
+    <br />
+    <partial name="_AccountListView" model="Model.AccountList" />
 }

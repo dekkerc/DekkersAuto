@@ -12,9 +12,23 @@ namespace DekkersAuto.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private DbService _dbService;
+
+        public HomeController(DbService dbService)
+        {
+            _dbService = dbService;
+        }
         public IActionResult Index()
         {
-            return View();
+            var banner = _dbService.GetBanner();
+            var viewModel = new BannerViewModel();
+            if(banner != null)
+            {
+                viewModel.BannerId = banner.Id;
+                viewModel.Text = banner.Text;
+                viewModel.IsActive = banner.IsActive;
+            }
+            return View(viewModel);
         }
         
         /// <summary>

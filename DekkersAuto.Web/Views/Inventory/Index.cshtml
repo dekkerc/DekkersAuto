@@ -7,14 +7,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<partial name="_FilterPartial" model="Model.Filter" />
 @if (SignInManager.IsSignedIn(User))
 {
-    <div class="mx-auto">
-        <a asp-action="Create" asp-controller="Inventory" class="btn btn-primary">Add Listing</a>
+    <div class="row">
+        <a asp-action="Create" asp-controller="Inventory" class="btn btn-primary col-12">Add Listing</a>
     </div>
+    <br />
 }
-
+<partial name="_FilterPartial" model="Model.Filter" />
+<br />
 <div id="inventoryList">
     <partial name="_InventoryListPartial" model="Model.InventoryList" />
 </div>

@@ -1,6 +1,8 @@
-﻿@{
+﻿@model DekkersAuto.Web.Models.BannerViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 <div class="row">
+    <partial name="_BannerAlert" model="Model" />
     <img src="~/images/Dekkers.PNG" class="img-fluid d-none d-sm-block" alt="Image of Dekkers Auto" />
 </div>

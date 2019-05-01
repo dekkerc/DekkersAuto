@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DekkersAuto.Web.Models;
 using DekkersAuto.Web.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -64,7 +65,7 @@ namespace DekkersAuto.Web.Controllers
                 bannerModel.IsActive = banner.IsActive;
                 bannerModel.Text = banner.Text;
             }
-            
+            model.BannerModel = bannerModel;
 
             var user = await UserManager.GetUserAsync(User);
             model.ManageAccountModel = new ManageAccountViewModel
@@ -181,6 +182,11 @@ namespace DekkersAuto.Web.Controllers
         {
             await SignInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        public async Task Delete(string userId)
+        {
+            await _dbService.DeleteUserAsync(userId);
         }
 
        
