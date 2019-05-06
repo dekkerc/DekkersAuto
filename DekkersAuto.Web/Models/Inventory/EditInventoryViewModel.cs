@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DekkersAuto.Web.Data.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -8,8 +9,10 @@ using System.Threading.Tasks;
 
 namespace DekkersAuto.Web.Models.Inventory
 {
-    public class CreateInventoryViewModel
+    public class EditInventoryViewModel
     {
+        public Guid ListingId { get; set; }
+
         [Required]
         public string Make { get; set; }
 
@@ -40,9 +43,28 @@ namespace DekkersAuto.Web.Models.Inventory
         public string Title { get; set; }
         public string Description { get; set; }
 
-
-
         public List<IFormFile> Images { get; set; }
 
+        public List<string> ImageStrings { get; set; }
+
+
+        public void PopulateListing(Listing listing)
+        {
+            ListingId = listing.Id;
+            ImageStrings = listing.Images.Select(i => i.ImageString).ToList();
+            Description = listing.Description;
+            Title = listing.Title;
+            Seats = listing.Car.Seats;
+            Doors = listing.Car.Doors;
+            FuelType = listing.Car.FuelType;
+            BodyType = listing.Car.BodyType;
+            Kilometers = listing.Car.Kilometers;
+            Year = listing.Car.Year;
+            Make = listing.Car.Make;
+            Model = listing.Car.Model;
+            Transmission = listing.Car.Transmission;
+            Colour = listing.Car.Colour;
+            DriveTrain = listing.Car.DriveTrain;
+        }
     }
 }

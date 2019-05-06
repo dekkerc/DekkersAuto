@@ -3,11 +3,13 @@ using DekkersAuto.Web.Data.Models;
 using DekkersAuto.Web.Models;
 using DekkersAuto.Web.Models.Account;
 using DekkersAuto.Web.Models.Inventory;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -59,7 +61,7 @@ namespace DekkersAuto.Web
                 {
                     ListingId = l.Id,
                     Description = l.Description,
-                    ImageUrl = l.Images.SingleOrDefault(i => i.IsFeature).ImageString,
+                    ImageUrl = l.Images.OrderBy(i =>i.IsFeature).FirstOrDefault().ImageString,
                     Title = l.Title,
                     Year = l.Car.Year,
                     Kilometers = l.Car.Kilometers
@@ -67,10 +69,11 @@ namespace DekkersAuto.Web
                 .ToList();
         }
 
-        public async Task AddListingAsync(Listing listing)
+        public async Task<Guid> AddListingAsync(Listing listing)
         {
-            await _db.Listings.AddAsync(listing);
+            var result = await _db.Listings.AddAsync(listing);
             await _db.SaveChangesAsync();
+            return result.Entity.Id;
         }
 
         public List<SelectListItem> GetRoles()
@@ -87,6 +90,86 @@ namespace DekkersAuto.Web
             return roles;
         }
 
+        public async Task AddImagesToListingAsync(Guid listingId, List<IFormFile> images)
+        {
+            foreach (var image in images)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await image.CopyToAsync(stream);
+                    var listingImage = new Image
+                    {
+                        ImageString = "data:image/png;base64," + Convert.ToBase64String(stream.ToArray()),
+                        ListingId = listingId
+                    };
+                    await _db.Images.AddAsync(listingImage);
+                }
+            }
+
+            await _db.SaveChangesAsync();
+
+        }
+
+        public async Task<Listing> GetListing(Guid listingId)
+        {
+            var listing = await _db.Listings.Include(l => l.Car).FirstOrDefaultAsync(l => l.Id == listingId);
+
+            listing.Images = GetListingImages(listingId);
+
+            return listing;
+        }
+        
+        public IEnumerable<Image> GetListingImages(Guid listingId)
+        {
+            return _db.Images.Where(i => i.ListingId == listingId).ToList();
+        }
+
+        public async Task UpdateListing(EditInventoryViewModel viewModel)
+        {
+            var listing = await _db.Listings.FindAsync(viewModel.ListingId);
+
+            //Update Car info
+            var car = await _db.Cars.FindAsync(listing.CarId);
+            car.BodyType = viewModel.BodyType;
+            car.Model = viewModel.Model;
+            car.Make = viewModel.Make;
+            car.Kilometers = viewModel.Kilometers;
+            car.Seats = viewModel.Seats;
+            car.Transmission = viewModel.Transmission;
+            car.Year = viewModel.Year;
+            car.DriveTrain = viewModel.DriveTrain;
+            car.Doors = viewModel.Doors;
+            car.Colour = viewModel.Colour;
+            _db.Cars.Update(car);
+            _db.SaveChanges();
+
+            //Update Listing Info
+            listing.Description = viewModel.Description;
+            listing.Title = viewModel.Title;
+
+            if(viewModel.Images != null && viewModel.Images.Count > 0)
+            {
+                var images = _db.Images.Where(i => i.ListingId == viewModel.ListingId).ToList();
+                _db.Images.RemoveRange(images);
+                foreach (var image in viewModel.Images)
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(stream);
+                        var listingImage = new Image
+                        {
+                            ImageString = "data:image/png;base64," + Convert.ToBase64String(stream.ToArray()),
+                            ListingId = viewModel.ListingId
+                        };
+                        await _db.Images.AddAsync(listingImage);
+                    }
+                }
+
+            }
+
+            _db.Listings.Update(listing);
+            _db.SaveChanges();
+        }
 
         public async Task<bool> CreateUserAsync(string username, string password, string roleId)
         {
@@ -215,6 +298,21 @@ namespace DekkersAuto.Web
                 Title = l.Title,
                 ListingId = l.Id
             }).ToList();
+        }
+
+        public async Task UpdateUser(ManageAccountViewModel model)
+        {
+            var user = await UserManager.FindByIdAsync(model.UserId);
+
+            user.UserName = model.Username;
+            await UserManager.UpdateAsync(user);
+            var roles = await UserManager.GetRolesAsync(user);
+
+            if (model.Role != roles.First())
+            {
+                await UserManager.RemoveFromRoleAsync(user, roles.First());
+                await UserManager.AddToRoleAsync(user, model.Role);
+            }
         }
 
         public async Task DeleteUserAsync(string userId)

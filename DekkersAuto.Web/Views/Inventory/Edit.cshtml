@@ -1,15 +1,16 @@
-﻿@model DekkersAuto.Web.Models.Inventory.CreateInventoryViewModel
+﻿@model DekkersAuto.Web.Models.Inventory.EditInventoryViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<h1>Edit</h1>
 
 <hr />
-<form asp-action="Create" method="POST" enctype="multipart/form-data">
+<form asp-action="Edit" method="POST" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="ListingId" hidden />
     <div class="card">
         <div class="card-body">
             <div class="row">
@@ -101,7 +102,12 @@
                    onchange="loadFile(event)"
                    asp-for="Images">
         </div>
-        <div id="imageList"></div>
+        <div id="imageList">
+            @foreach(var image in Model.ImageStrings)
+            {
+                <img src="@image" class="img-thumbnail col-4" />
+            }
+        </div>
     </div>
     <br />
     <div class="form-group">

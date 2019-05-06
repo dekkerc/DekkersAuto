@@ -72,7 +72,8 @@ namespace DekkersAuto.Web.Controllers
             {
                 Username = user.UserName,
                 Role = _dbService.GetRole(user),
-                RoleTypes = _dbService.GetRoles()
+                RoleTypes = _dbService.GetRoles(),
+                UserId = user.Id
             };
 
             var accountList = _dbService.GetAccountList(user.Id);
@@ -187,6 +188,12 @@ namespace DekkersAuto.Web.Controllers
         public async Task Delete(string userId)
         {
             await _dbService.DeleteUserAsync(userId);
+        }
+
+        [HttpPost]
+        public async Task Edit(ManageAccountViewModel model)
+        {
+            await _dbService.UpdateUser(model);
         }
 
        

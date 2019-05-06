@@ -7,6 +7,7 @@ using DekkersAuto.Web.Data;
 using DekkersAuto.Web.Data.Models;
 using DekkersAuto.Web.Models.Inventory;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -90,9 +91,59 @@ namespace DekkersAuto.Web.Controllers
                 }
             };
 
-            await _dbService.AddListingAsync(listing);
-            
+            var listingId = await _dbService.AddListingAsync(listing);
+
+            await _dbService.AddImagesToListingAsync(listingId, viewModel.Images);
+
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid listingId)
+        {
+            var listing = await _dbService.GetListing(listingId);
+            
+            var viewModel = new EditInventoryViewModel
+            {
+                ColourList = Util.GetColours(),
+                MakeList = _dbService.GetMakeList(),
+                ModelList = _dbService.GetModelList(),
+                TransmissionList = Util.GetTransmissions()
+            };
+            viewModel.PopulateListing(listing);
+
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// Method to update the contents of a listing object
+        /// Returns back to the listing index page
+        /// </summary>
+        /// <param name="viewModel">Edit model containing parameters for updating the listing</param>
+        /// <returns>The inventory index</returns>
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditInventoryViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                viewModel.ColourList = Util.GetColours();
+                viewModel.MakeList = _dbService.GetMakeList();
+                viewModel.ModelList = _dbService.GetModelList();
+                viewModel.TransmissionList = Util.GetTransmissions();
+                return View(viewModel);
+            }
+
+            await _dbService.UpdateListing(viewModel);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Details(Guid listingId)
+        {
+            var listing = _dbService.GetListing(listingId);
+
+            return View();
         }
 
 
@@ -108,5 +159,6 @@ namespace DekkersAuto.Web.Controllers
             
             return PartialView("_InventoryListPartial", result);
         }
+
     }
 }

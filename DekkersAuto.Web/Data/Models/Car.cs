@@ -48,6 +48,11 @@ namespace DekkersAuto.Web.Data.Models
         /// </summary>
         public string Transmission { get; set; }
         /// <summary>
+        /// Gets and sets the DriveTrain
+        /// Represents the DriveTrain type of a car
+        /// </summary>
+        public string DriveTrain { get; set; }
+        /// <summary>
         /// Gets and sets the Year
         /// Represents the year of a car
         /// </summary>

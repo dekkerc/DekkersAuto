@@ -30,10 +30,16 @@ namespace DekkersAuto.Web.Models.Account
         /// </summary>
         public List<SelectListItem> RoleTypes { get; set; }
         /// <summary>
-        /// Gets and sets the Role
+        /// Gets and sets the Role.
         /// Represents the role the user will be created with. Determines the permissions available to the user
         /// </summary>
         [Required]
         public string Role { get; set; }
+
+        /// <summary>
+        /// Get and sets the UserId
+        /// Represents the unique ID of the user
+        /// </summary>
+        public string UserId { get; set; }
     }
 }
