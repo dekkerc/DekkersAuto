@@ -84,7 +84,7 @@ namespace DekkersAuto.Web
                 roles.Add(new SelectListItem
                 {
                     Text = r.Name,
-                    Value = r.Id
+                    Value = r.Name
                 });
             });
             return roles;
@@ -171,7 +171,7 @@ namespace DekkersAuto.Web
             _db.SaveChanges();
         }
 
-        public async Task<bool> CreateUserAsync(string username, string password, string roleId)
+        public async Task<bool> CreateUserAsync(string username, string password, string role)
         {
             var user = new IdentityUser
             {
@@ -181,8 +181,7 @@ namespace DekkersAuto.Web
             if (result.Succeeded)
             {
                 var newUser = await UserManager.FindByNameAsync(user.UserName);
-                var role = _db.Roles.Find(roleId);
-                var roleResult = await UserManager.AddToRoleAsync(newUser, await RoleManager.GetRoleNameAsync(role));
+                var roleResult = await UserManager.AddToRoleAsync(newUser, role);
             }
             return result.Succeeded;
         }
@@ -219,6 +218,8 @@ namespace DekkersAuto.Web
             };
         }
 
+      
+
         public Banner GetBanner()
         {
             var banner = _db.Banners.FirstOrDefault();
@@ -237,6 +238,11 @@ namespace DekkersAuto.Web
             banner.IsActive = model.IsActive;
             _db.Banners.Update(banner);
             _db.SaveChanges();
+        }
+
+        public async Task<IdentityUser> GetUser(Guid accountId)
+        {
+            return await UserManager.FindByIdAsync(accountId.ToString());
         }
 
         public string GetRole(IdentityUser user)
@@ -308,11 +314,16 @@ namespace DekkersAuto.Web
             await UserManager.UpdateAsync(user);
             var roles = await UserManager.GetRolesAsync(user);
 
-            if (model.Role != roles.First())
+            if (roles.Count ==  0)
             {
-                await UserManager.RemoveFromRoleAsync(user, roles.First());
                 await UserManager.AddToRoleAsync(user, model.Role);
             }
+            else if(roles.FirstOrDefault() != model.Role)
+            {
+                await UserManager.RemoveFromRoleAsync(user, roles.FirstOrDefault());
+                await UserManager.AddToRoleAsync(user, model.Role);
+            }
+            _db.SaveChanges();
         }
 
         public async Task DeleteUserAsync(string userId)

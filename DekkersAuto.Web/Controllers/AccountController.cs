@@ -191,11 +191,27 @@ namespace DekkersAuto.Web.Controllers
         }
 
         [HttpPost]
-        public async Task Edit(ManageAccountViewModel model)
+        public async Task<IActionResult> Edit(ManageAccountViewModel model)
         {
             await _dbService.UpdateUser(model);
+            return RedirectToAction("Index");
         }
 
-       
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid userId)
+        {
+            var user = await _dbService.GetUser(userId);
+            var model = new ManageAccountViewModel
+            {
+                Username = user.UserName,
+                Role = _dbService.GetRole(user),
+                RoleTypes = _dbService.GetRoles(),
+                UserId = user.Id
+            };
+
+            return View(model);
+        }
+
+
     }
 }
