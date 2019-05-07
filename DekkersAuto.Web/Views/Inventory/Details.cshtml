@@ -1,4 +1,5 @@
 ﻿@model DekkersAuto.Web.Models.Inventory.DetailViewModel
+@using DekkersAuto.Web.Models.Home
 
 <div class="card">
     <h5 class="card-header">@Model.Title</h5>
@@ -89,4 +90,6 @@
         </div>
     </div>
 </div>
+<br />
+<partial name="_ContactForm" model="new ContactViewModel()"/>
 
