@@ -1,25 +1,28 @@
 ﻿@model DekkersAuto.Web.Models.Inventory.InventoryListItemViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
+ 
 
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-4">
-                <img src="@Model.ImageUrl" class="img-fluid img-thumbnail" />
-            </div>
-            <div class="col-8">
-                <h4>@Model.Title</h4>
-                <p>@Model.Description</p>
-                <p>@Model.Kilometers km</p>
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <a asp-action="Edit" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }' class="btn btn-primary">
-                        Edit
-                    </a>
-                }
+
+<a asp-action="Details" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }'>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-4">
+                    <img src="@Model.ImageUrl" class="img-fluid img-thumbnail" />
+                </div>
+                <div class="col-8">
+                    <h4>@Model.Title</h4>
+                    <p>@Model.Description</p>
+                    <p>@Model.Kilometers km</p>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a asp-action="Edit" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }' class="btn btn-primary">
+                            Edit
+                        </a>
+                    }
+                </div>
             </div>
         </div>
     </div>
-</div>
-
+</a>

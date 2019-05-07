@@ -110,7 +110,7 @@ namespace DekkersAuto.Web.Controllers
                 ModelList = _dbService.GetModelList(),
                 TransmissionList = Util.GetTransmissions()
             };
-            viewModel.PopulateListing(listing);
+            viewModel.Populate(listing);
 
             return View(viewModel);
         }
@@ -139,11 +139,14 @@ namespace DekkersAuto.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(Guid listingId)
+        public async Task<IActionResult> Details(Guid listingId)
         {
-            var listing = _dbService.GetListing(listingId);
+            var listing = await _dbService.GetListing(listingId);
 
-            return View();
+            var viewModel = new DetailViewModel();
+            viewModel.Populate(listing);
+            
+            return View(viewModel);
         }
 
 
