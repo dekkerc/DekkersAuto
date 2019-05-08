@@ -6,7 +6,7 @@
 <div id="@Model.ListingId">
     <div class="card">
         <div class="card-body">
-            <a asp-action="Details" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }'>
+            <a asp-action="Details" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }' style="text-decoration:none; color:black;">
                 <div class="row">
                     <div class="col-4">
                         <img src="@Model.ImageUrl" class="img-fluid img-thumbnail" />

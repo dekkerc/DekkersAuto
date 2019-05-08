@@ -21,11 +21,7 @@ namespace DekkersAuto.Web.Controllers
         /// Usermanager handles creation and manipulation of users
         /// </summary>
         private UserManager<IdentityUser> UserManager { get; set; }
-        /// <summary>
-        /// Gets and sets the RoleManager
-        /// Rolemanager handles creation, manipulation and assignment of roles
-        /// </summary>
-        private RoleManager<IdentityRole> RoleManager { get; set; }
+
 
         /// <summary>
         /// Gets and sets the SignInManager
@@ -40,10 +36,9 @@ namespace DekkersAuto.Web.Controllers
         /// </summary>
         /// <param name="userManager">The user manager for IdentityUsers</param>
         /// <param name="roleManager">The role manager for IdentityRoles</param>
-        public AccountController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager, DbService dbService)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, DbService dbService)
         {
             UserManager = userManager;
-            RoleManager = roleManager;
             SignInManager = signInManager;
             _dbService = dbService;
         }
@@ -211,6 +206,27 @@ namespace DekkersAuto.Web.Controllers
                 UserId = user.Id
             };
 
+            return View(model);
+        }
+
+        public async Task<IActionResult> AccountList()
+        {
+            var user = await UserManager.GetUserAsync(User);
+            var model =_dbService.GetAccountList(user.Id);
+
+            return View(model);
+        }
+
+        public IActionResult Banner()
+        {
+            var banner = _dbService.GetBanner();
+            var model = new BannerViewModel();
+            if (banner != null)
+            {
+                model.BannerId = banner.Id;
+                model.IsActive = banner.IsActive;
+                model.Text = banner.Text;
+            }
             return View(model);
         }
 

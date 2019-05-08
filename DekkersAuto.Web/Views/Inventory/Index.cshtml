@@ -10,7 +10,9 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <div class="row">
-        <a asp-action="Create" asp-controller="Inventory" class="btn btn-primary col-12">Add Listing</a>
+        <div class="col-12">
+            <a asp-action="Create" asp-controller="Inventory" class="btn btn-primary col-12">Add Listing</a>
+        </div>
     </div>
     <br />
 }

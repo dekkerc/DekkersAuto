@@ -15,10 +15,10 @@
     </div>
 </div>
 <br />
-<partial name="_ManageBanner" model="Model.BannerModel" />
+<partial name="Banner" model="Model.BannerModel" />
 
 @if (User.IsInRole("Admin"))
 {
     <br />
-    <partial name="_AccountListView" model="Model.AccountList" />
+    <partial name="AccountList" model="Model.AccountList" />
 }
