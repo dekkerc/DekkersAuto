@@ -40,17 +40,17 @@ namespace DekkersAuto.Web.Models.Inventory
             ImageStrings = listing.Images?.Select(i => i.ImageString).ToList();
             Description = listing.Description;
             Title = listing.Title;
-            Seats = listing.Car.Seats;
-            Doors = listing.Car.Doors;
-            FuelType = listing.Car.FuelType;
-            BodyType = listing.Car.BodyType;
-            Kilometers = listing.Car.Kilometers;
-            Year = listing.Car.Year;
-            Make = listing.Car.Make;
-            Model = listing.Car.Model;
-            Transmission = listing.Car.Transmission;
-            Colour = listing.Car.Colour;
-            DriveTrain = listing.Car.DriveTrain;
+            Seats = listing.Seats;
+            Doors = listing.Doors;
+            FuelType = listing.FuelType;
+            BodyType = listing.BodyType;
+            Kilometers = listing.Kilometers;
+            Year = listing.Year;
+            Make = listing.Make;
+            Model = listing.Model;
+            Transmission = listing.Transmission;
+            Colour = listing.Colour;
+            DriveTrain = listing.DriveTrain;
         }
     }
 }

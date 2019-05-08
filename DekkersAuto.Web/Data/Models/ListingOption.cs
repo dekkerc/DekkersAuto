@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace DekkersAuto.Web.Data.Models
 {
-    public class CarOption
+    public class ListingOption
     {
         [Key]
         public Guid Id { get; set; }
-        [ForeignKey("Car")]
-        public Guid CarId { get; set; }
+        [ForeignKey("Listing")]
+        public Guid ListingId { get; set; }
         [ForeignKey("Option")]
         public Guid OptionId { get; set; }
     }

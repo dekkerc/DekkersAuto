@@ -60,7 +60,6 @@ namespace DekkersAuto.Web
         public List<InventoryListItemViewModel> GetInventoryList()
         {
             return _db.Listings
-                .Include(l => l.Car)
                 .Include(l => l.Images)
                 .Select(l => new InventoryListItemViewModel
                 {
@@ -68,8 +67,8 @@ namespace DekkersAuto.Web
                     Description = l.Description,
                     ImageUrl = l.Images.OrderBy(i => i.IsFeature).FirstOrDefault().ImageString,
                     Title = l.Title,
-                    Year = l.Car.Year,
-                    Kilometers = l.Car.Kilometers
+                    Year = l.Year,
+                    Kilometers = l.Kilometers
                 })
                 .ToList();
         }
@@ -97,7 +96,7 @@ namespace DekkersAuto.Web
 
         public async Task AddOptionsToListingAsync(Guid carId, List<Guid> selectedOptions)
         {
-            await _db.CarOptions.AddRangeAsync(selectedOptions.Select(o => new CarOption { CarId = carId, OptionId = o }));
+            await _db.ListingOptions.AddRangeAsync(selectedOptions.Select(o => new ListingOption { ListingId = carId, OptionId = o }));
             await _db.SaveChangesAsync();
         }
 
@@ -133,7 +132,7 @@ namespace DekkersAuto.Web
 
         public async Task<Listing> GetListing(Guid listingId)
         {
-            var listing = await _db.Listings.Include(l => l.Car).FirstOrDefaultAsync(l => l.Id == listingId);
+            var listing = await _db.Listings.FirstOrDefaultAsync(l => l.Id == listingId);
 
             listing.Images = GetListingImages(listingId);
             return listing;
@@ -148,20 +147,18 @@ namespace DekkersAuto.Web
         public async Task UpdateListing(EditInventoryViewModel viewModel)
         {
             var listing = await _db.Listings.FindAsync(viewModel.ListingId);
-
-            //Update Car info
-            var car = await _db.Cars.FindAsync(listing.CarId);
-            car.BodyType = viewModel.BodyType;
-            car.Model = viewModel.Model;
-            car.Make = viewModel.Make;
-            car.Kilometers = viewModel.Kilometers;
-            car.Seats = viewModel.Seats;
-            car.Transmission = viewModel.Transmission;
-            car.Year = viewModel.Year;
-            car.DriveTrain = viewModel.DriveTrain;
-            car.Doors = viewModel.Doors;
-            car.Colour = viewModel.Colour;
-            _db.Cars.Update(car);
+            
+            listing.BodyType = viewModel.BodyType;
+            listing.Model = viewModel.Model;
+            listing.Make = viewModel.Make;
+            listing.Kilometers = viewModel.Kilometers;
+            listing.Seats = viewModel.Seats;
+            listing.Transmission = viewModel.Transmission;
+            listing.Year = viewModel.Year;
+            listing.DriveTrain = viewModel.DriveTrain;
+            listing.Doors = viewModel.Doors;
+            listing.Colour = viewModel.Colour;
+            _db.Listings.Update(listing);
             _db.SaveChanges();
 
             //Update Listing Info
@@ -192,15 +189,15 @@ namespace DekkersAuto.Web
             _db.SaveChanges();
         }
 
-        public List<string> GetCarOptions(Guid carId)
+        public List<string> GetListingOptions(Guid carId)
         {
-            return _db.CarOptions
-                .Where(c => c.CarId == carId)
+            return _db.ListingOptions
+                .Where(c => c.ListingId == carId)
                 .Join(
                     _db.Options,
-                    carOption => carOption.OptionId,
+                    listingOption => listingOption.OptionId,
                     option => option.Id,
-                    (carOption, option) => option.Description
+                    (listingOption, option) => option.Description
                 )
                 .ToList();
         }
@@ -313,42 +310,42 @@ namespace DekkersAuto.Web
 
         public List<InventoryListItemViewModel> FilterListings(FilterViewModel model)
         {
-            var inventory = _db.Listings.Include(l => l.Car).Include(l => l.Images).ToList();
+            var inventory = _db.Listings.Include(l => l.Images).ToList();
 
             if (model.Colour != null)
             {
-                inventory = inventory.Where(l => l.Car.Colour == model.Colour).ToList();
+                inventory = inventory.Where(l => l.Colour == model.Colour).ToList();
             }
             if (model.Make != null)
             {
-                inventory = inventory.Where(l => l.Car.Make == model.Make).ToList();
+                inventory = inventory.Where(l => l.Make == model.Make).ToList();
             }
             if (model.Model != null)
             {
-                inventory = inventory.Where(l => l.Car.Model == model.Model).ToList();
+                inventory = inventory.Where(l => l.Model == model.Model).ToList();
             }
             if (model.KilometersFrom.HasValue && model.KilometersFrom > 0)
             {
-                inventory = inventory.Where(l => l.Car.Kilometers >= model.KilometersFrom).ToList();
+                inventory = inventory.Where(l => l.Kilometers >= model.KilometersFrom).ToList();
             }
             if (model.KilometersTo.HasValue && model.KilometersTo > 0)
             {
-                inventory = inventory.Where(l => l.Car.Kilometers <= model.KilometersTo).ToList();
+                inventory = inventory.Where(l => l.Kilometers <= model.KilometersTo).ToList();
             }
             if (model.YearFrom.HasValue && model.YearFrom > 0)
             {
-                inventory = inventory.Where(l => l.Car.Year >= model.YearFrom).ToList();
+                inventory = inventory.Where(l => l.Year >= model.YearFrom).ToList();
             }
             if (model.YearTo.HasValue && model.YearTo > 0)
             {
-                inventory = inventory.Where(l => l.Car.Year <= model.YearTo).ToList();
+                inventory = inventory.Where(l => l.Year <= model.YearTo).ToList();
             }
             return inventory.Select(l => new InventoryListItemViewModel
             {
                 Description = l.Description,
                 ImageUrl = l.Images.SingleOrDefault(i => i.IsFeature)?.ImageString,
-                Kilometers = l.Car.Kilometers,
-                Year = l.Car.Year,
+                Kilometers = l.Kilometers,
+                Year = l.Year,
                 Title = l.Title,
                 ListingId = l.Id
             }).ToList();

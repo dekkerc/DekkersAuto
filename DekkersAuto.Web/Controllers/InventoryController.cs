@@ -22,7 +22,7 @@ namespace DekkersAuto.Web.Controllers
         {
             _dbService = service;
         }
-        
+
 
         public IActionResult Index()
         {
@@ -83,25 +83,23 @@ namespace DekkersAuto.Web.Controllers
             {
                 Title = viewModel.Title,
                 Description = viewModel.Description,
-                Car = new Car
-                {
-                    Make = viewModel.Make,
-                    Model = viewModel.Model,
-                    BodyType = viewModel.BodyType,
-                    Colour = viewModel.Colour,
-                    FuelType = viewModel.FuelType,
-                    Doors = viewModel.Doors,
-                    Seats = viewModel.Seats,
-                    Kilometers = viewModel.Kilometers,
-                    Transmission = viewModel.Transmission,
-                    Year = viewModel.Year
-                }
+                Make = viewModel.Make,
+                Model = viewModel.Model,
+                BodyType = viewModel.BodyType,
+                Colour = viewModel.Colour,
+                FuelType = viewModel.FuelType,
+                Doors = viewModel.Doors,
+                Seats = viewModel.Seats,
+                Kilometers = viewModel.Kilometers,
+                Transmission = viewModel.Transmission,
+                Year = viewModel.Year
+
             };
 
             var createdListing = await _dbService.AddListingAsync(listing);
 
             await _dbService.AddImagesToListingAsync(createdListing.Id, viewModel.Images);
-            await _dbService.AddOptionsToListingAsync(createdListing.CarId, viewModel.SelectedOptions);
+            await _dbService.AddOptionsToListingAsync(createdListing.Id, viewModel.SelectedOptions);
 
             return RedirectToAction("Index");
         }
@@ -115,7 +113,7 @@ namespace DekkersAuto.Web.Controllers
         public async Task<IActionResult> Edit(Guid listingId)
         {
             var listing = await _dbService.GetListing(listingId);
-            
+
             var viewModel = new EditInventoryViewModel
             {
                 ColourList = Util.GetColours(),
@@ -158,7 +156,7 @@ namespace DekkersAuto.Web.Controllers
 
             var viewModel = new DetailViewModel();
             viewModel.Populate(listing);
-            viewModel.Options = _dbService.GetCarOptions(listing.CarId);
+            viewModel.Options = _dbService.GetListingOptions(listing.Id);
             return View(viewModel);
         }
 
@@ -172,7 +170,7 @@ namespace DekkersAuto.Web.Controllers
         public IActionResult Filter(FilterViewModel viewModel)
         {
             var result = _dbService.FilterListings(viewModel);
-            
+
             return PartialView("_InventoryListPartial", result);
         }
 
