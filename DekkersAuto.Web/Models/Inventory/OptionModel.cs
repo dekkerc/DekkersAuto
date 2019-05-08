@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DekkersAuto.Web.Data.Models
+namespace DekkersAuto.Web.Models.Inventory
 {
-    /// <summary>
-    /// Class describing a feature of a car
-    /// </summary>
-    public class Option
+    public class OptionModel
     {
-        [Key]
         public Guid Id { get; set; }
         public string Description { get; set; }
+        public bool Selected { get; set; } = false;
     }
 }

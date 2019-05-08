@@ -52,6 +52,11 @@ namespace DekkersAuto.Web
             return makeList;
         }
 
+        public List<OptionModel> GetOptions()
+        {
+            return _db.Options.Select(o => new OptionModel { Id = o.Id, Description = o.Description }).ToList();
+        }
+
         public List<InventoryListItemViewModel> GetInventoryList()
         {
             return _db.Listings
@@ -69,11 +74,11 @@ namespace DekkersAuto.Web
                 .ToList();
         }
 
-        public async Task<Guid> AddListingAsync(Listing listing)
+        public async Task<Listing> AddListingAsync(Listing listing)
         {
             var result = await _db.Listings.AddAsync(listing);
             await _db.SaveChangesAsync();
-            return result.Entity.Id;
+            return result.Entity;
         }
 
         public List<SelectListItem> GetRoles()
@@ -88,6 +93,11 @@ namespace DekkersAuto.Web
                 });
             });
             return roles;
+        }
+
+        public async Task AddOptionsToListingAsync(Guid carId, List<Guid> selectedOptions)
+        {
+            await _db.CarOptions.AddRangeAsync(selectedOptions.Select(o => new CarOption { CarId = carId, OptionId = o }));
         }
 
         public async Task AddImagesToListingAsync(Guid listingId, List<IFormFile> images)
@@ -115,10 +125,10 @@ namespace DekkersAuto.Web
             var listing = await _db.Listings.Include(l => l.Car).FirstOrDefaultAsync(l => l.Id == listingId);
 
             listing.Images = GetListingImages(listingId);
-
             return listing;
         }
         
+
         public IEnumerable<Image> GetListingImages(Guid listingId)
         {
             return _db.Images.Where(i => i.ListingId == listingId).ToList();
@@ -169,6 +179,19 @@ namespace DekkersAuto.Web
 
             _db.Listings.Update(listing);
             _db.SaveChanges();
+        }
+
+        public List<string> GetCarOptions(Guid carId)
+        {
+            return _db.CarOptions
+                .Where(c => c.CarId == carId)
+                .Join(
+                    _db.Options,
+                    carOption => carOption.OptionId,
+                    option => option.Id,
+                    (carOption, option) => option.Description
+                )
+                .ToList();
         }
 
         public async Task<bool> CreateUserAsync(string username, string password, string role)
@@ -248,6 +271,20 @@ namespace DekkersAuto.Web
         public string GetRole(IdentityUser user)
         {
             return _db.UserRoles.SingleOrDefault(ur => ur.UserId == user.Id)?.RoleId;
+        }
+
+        public void SeedOptions()
+        {
+            _db.Options.AddRange(new List<Option>
+            {
+                new Option{ Description = "Sunroof" },
+                new Option{ Description = "Power Seats" },
+                new Option{ Description = "Heated Seats" },
+                new Option{ Description = "Power Mirrors" },
+                new Option{ Description = "Cruise Control" },
+                new Option{ Description = "Power Windows" },
+            });
+            _db.SaveChanges();
         }
 
         public void SeedMakes()

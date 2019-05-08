@@ -19,16 +19,18 @@ namespace DekkersAuto.Web.Models.Inventory
         public string DriveTrain { get; set; }
         public string Colour { get; set; }
         [Required]
-        public int Year { get; set; }
+        public int? Year { get; set; }
         [Required]
-        public int Kilometers { get; set; }
+        public int? Kilometers { get; set; }
         [Display(Name = "BodyType", ResourceType = typeof(Locale))]
         public string BodyType { get; set; }
         [Display(Name = "FuelType", ResourceType = typeof(Locale))]
         public string FuelType { get; set; }
-        public int Doors { get; set; }
-        public int Seats { get; set; }
+        public int? Doors { get; set; }
+        public int? Seats { get; set; }
+        [Required]
         public string Title { get; set; }
+        [Required]
         public string Description { get; set; }
         public List<string> ImageStrings { get; set; }
 

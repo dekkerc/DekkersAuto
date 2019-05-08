@@ -96,6 +96,8 @@ namespace DekkersAuto.Web.Controllers
             var model = new ManageAccountViewModel();
             model.RoleTypes = _dbService.GetRoles();
 
+            
+
             return View(model);
         }
 

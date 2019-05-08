@@ -22,6 +22,7 @@ namespace DekkersAuto.Web.Controllers
         {
             _dbService = service;
         }
+        
 
         public IActionResult Index()
         {
@@ -53,7 +54,8 @@ namespace DekkersAuto.Web.Controllers
                 ColourList = Util.GetColours(),
                 MakeList = _dbService.GetMakeList(),
                 ModelList = _dbService.GetModelList(),
-                TransmissionList = Util.GetTransmissions()
+                TransmissionList = Util.GetTransmissions(),
+                Options = _dbService.GetOptions()
             };
 
             return View(viewModel);
@@ -91,9 +93,10 @@ namespace DekkersAuto.Web.Controllers
                 }
             };
 
-            var listingId = await _dbService.AddListingAsync(listing);
+            var createdListing = await _dbService.AddListingAsync(listing);
 
-            await _dbService.AddImagesToListingAsync(listingId, viewModel.Images);
+            await _dbService.AddImagesToListingAsync(createdListing.Id, viewModel.Images);
+            await _dbService.AddOptionsToListingAsync(createdListing.CarId, viewModel.SelectedOptions);
 
             return RedirectToAction("Index");
         }
@@ -145,7 +148,7 @@ namespace DekkersAuto.Web.Controllers
 
             var viewModel = new DetailViewModel();
             viewModel.Populate(listing);
-            
+            viewModel.Options = _dbService.GetCarOptions(listing.CarId);
             return View(viewModel);
         }
 

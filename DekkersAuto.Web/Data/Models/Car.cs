@@ -31,7 +31,7 @@ namespace DekkersAuto.Web.Data.Models
         /// Gets and sets the Kilometers
         /// Represents the mileage of a car
         /// </summary>
-        public int Kilometers { get; set; }
+        public int? Kilometers { get; set; }
         /// <summary>
         /// Gets and sets the Colour
         /// Represents the colour of a car
@@ -56,7 +56,7 @@ namespace DekkersAuto.Web.Data.Models
         /// Gets and sets the Year
         /// Represents the year of a car
         /// </summary>
-        public int Year { get; set; }
+        public int? Year { get; set; }
         /// <summary>
         /// Gets and sets the BodyType
         /// Represents the body type of a car
@@ -66,16 +66,12 @@ namespace DekkersAuto.Web.Data.Models
         /// Gets and sets the Doors
         /// Represents the number of doors of a car
         /// </summary>
-        public int Doors { get; set; }
+        public int? Doors { get; set; }
         /// <summary>
         /// Gets and sets the Seats
         /// Represents the number of seats of a car
         /// </summary>
-        public int Seats { get; set; }
-        /// <summary>
-        /// Gets and sets the Options
-        /// Represents the options of a car
-        /// </summary>
-        public virtual IEnumerable<Option> Options { get; set; }
+        public int? Seats { get; set; }
+        
     }
 }

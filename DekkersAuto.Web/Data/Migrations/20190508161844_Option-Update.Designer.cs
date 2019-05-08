@@ -4,14 +4,16 @@ using DekkersAuto.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace DekkersAuto.Web.Migrations
+namespace DekkersAuto.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190508161844_Option-Update")]
+    partial class OptionUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,7 +78,7 @@ namespace DekkersAuto.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CarOptions");
+                    b.ToTable("Options");
                 });
 
             modelBuilder.Entity("DekkersAuto.Web.Data.Models.Image", b =>
@@ -141,18 +143,6 @@ namespace DekkersAuto.Web.Migrations
                     b.HasIndex("MakeId");
 
                     b.ToTable("Models");
-                });
-
-            modelBuilder.Entity("DekkersAuto.Web.Data.Models.Option", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Options");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

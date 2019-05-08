@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DekkersAuto.Web.Data.Models
 {
-    /// <summary>
-    /// Class describing a feature of a car
-    /// </summary>
-    public class Option
+    public class CarOption
     {
         [Key]
         public Guid Id { get; set; }
-        public string Description { get; set; }
+        [ForeignKey("Car")]
+        public Guid CarId { get; set; }
+        [ForeignKey("Option")]
+        public Guid OptionId { get; set; }
     }
 }

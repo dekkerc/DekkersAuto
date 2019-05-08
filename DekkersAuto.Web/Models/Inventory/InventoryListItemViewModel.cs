@@ -29,12 +29,12 @@ namespace DekkersAuto.Web.Models.Inventory
         /// Gets and sets the Year
         /// Represents the year of the listed vehicle
         /// </summary>
-        public int Year { get; set; }
+        public int? Year { get; set; }
         /// <summary>
         /// Gets and sets the Kilometers
         /// Represents the kilometers of the listed vehicle
         /// </summary>
-        public int Kilometers { get; set; }
+        public int? Kilometers { get; set; }
         /// <summary>
         /// Gets and sets the Description
         /// Represents the description of the listing

@@ -7,5 +7,6 @@ namespace DekkersAuto.Web.Models.Inventory
 {
     public class DetailViewModel: ListingBase
     {
+        public List<string> Options { get; set; }
     }
 }
