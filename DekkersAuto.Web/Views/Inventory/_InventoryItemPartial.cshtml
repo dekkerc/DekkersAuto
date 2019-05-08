@@ -1,28 +1,45 @@
 ﻿@model DekkersAuto.Web.Models.Inventory.InventoryListItemViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
- 
 
 
-<a asp-action="Details" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }'>
+<div id="@Model.ListingId">
     <div class="card">
         <div class="card-body">
-            <div class="row">
-                <div class="col-4">
-                    <img src="@Model.ImageUrl" class="img-fluid img-thumbnail" />
+            <a asp-action="Details" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }'>
+                <div class="row">
+                    <div class="col-4">
+                        <img src="@Model.ImageUrl" class="img-fluid img-thumbnail" />
+                    </div>
+                    <div class="col-8">
+                        <h4>@Model.Title</h4>
+                        <p>@Model.Description</p>
+                        <p>@Model.Kilometers km</p>
+
+                    </div>
                 </div>
-                <div class="col-8">
-                    <h4>@Model.Title</h4>
-                    <p>@Model.Description</p>
-                    <p>@Model.Kilometers km</p>
-                    @if (SignInManager.IsSignedIn(User))
-                    {
+            </a>
+
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div class="row">
+                    <div class="col-12">
                         <a asp-action="Edit" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }' class="btn btn-primary">
                             Edit
                         </a>
-                    }
+                        <a asp-action="Delete"
+                           asp-controller="Inventory"
+                           asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }'
+                           class="btn btn-danger"
+                           data-ajax="true"
+                           data-ajax-mode="replace"
+                           data-ajax-update="#@Model.ListingId">
+                            Delete
+                        </a>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
-</a>
+
+</div>

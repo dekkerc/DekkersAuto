@@ -106,6 +106,11 @@ namespace DekkersAuto.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        public async Task Delete(Guid listingId)
+        {
+            await _dbService.DeleteListingAsync(listingId);
+        }
+
         [HttpGet]
         public async Task<IActionResult> Edit(Guid listingId)
         {

@@ -66,7 +66,7 @@ namespace DekkersAuto.Web
                 {
                     ListingId = l.Id,
                     Description = l.Description,
-                    ImageUrl = l.Images.OrderBy(i =>i.IsFeature).FirstOrDefault().ImageString,
+                    ImageUrl = l.Images.OrderBy(i => i.IsFeature).FirstOrDefault().ImageString,
                     Title = l.Title,
                     Year = l.Car.Year,
                     Kilometers = l.Car.Kilometers
@@ -121,6 +121,16 @@ namespace DekkersAuto.Web
 
         }
 
+        public async Task DeleteListingAsync(Guid listingId)
+        {
+            var listing = await _db.Listings.FindAsync(listingId);
+            if (listing != null)
+            {
+                _db.Listings.Remove(listing);
+                await _db.SaveChangesAsync();
+            }
+        }
+
         public async Task<Listing> GetListing(Guid listingId)
         {
             var listing = await _db.Listings.Include(l => l.Car).FirstOrDefaultAsync(l => l.Id == listingId);
@@ -128,7 +138,7 @@ namespace DekkersAuto.Web
             listing.Images = GetListingImages(listingId);
             return listing;
         }
-        
+
 
         public IEnumerable<Image> GetListingImages(Guid listingId)
         {
@@ -158,7 +168,7 @@ namespace DekkersAuto.Web
             listing.Description = viewModel.Description;
             listing.Title = viewModel.Title;
 
-            if(viewModel.Images != null && viewModel.Images.Count > 0)
+            if (viewModel.Images != null && viewModel.Images.Count > 0)
             {
                 var images = _db.Images.Where(i => i.ListingId == viewModel.ListingId).ToList();
                 _db.Images.RemoveRange(images);
@@ -242,7 +252,7 @@ namespace DekkersAuto.Web
             };
         }
 
-      
+
 
         public Banner GetBanner()
         {
@@ -352,11 +362,11 @@ namespace DekkersAuto.Web
             await UserManager.UpdateAsync(user);
             var roles = await UserManager.GetRolesAsync(user);
 
-            if (roles.Count ==  0)
+            if (roles.Count == 0)
             {
                 await UserManager.AddToRoleAsync(user, model.Role);
             }
-            else if(roles.FirstOrDefault() != model.Role)
+            else if (roles.FirstOrDefault() != model.Role)
             {
                 await UserManager.RemoveFromRoleAsync(user, roles.FirstOrDefault());
                 await UserManager.AddToRoleAsync(user, model.Role);
