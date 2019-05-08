@@ -36,56 +36,57 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12">
-                <textarea class="form-control" readonly>@Model.Description</textarea>
+                <textarea rows="4" class="form-control" readonly>@Model.Description</textarea>
             </div>
         </div>
+        <br />
         <div class="row">
             <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="Make" class="control-label"></label>
-                    <input asp-for="Make" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="Make" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.Make != null ? Model.Make : "n/a")</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Model" class="control-label"></label>
-                    <input asp-for="Model" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="Model" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.Model != null ? Model.Model : "n/a")</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Year" class="control-label"></label>
-                    <input asp-for="Year" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="Year" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.Year != null ? Model.Year.ToString() : "n/a")</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Kilometers" class="control-label"></label>
-                    <input asp-for="Kilometers" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="Kilometers" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.Kilometers != null ? Model.Kilometers.ToString() : "n/a")</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="BodyType" class="control-label"></label>
-                    <input asp-for="BodyType" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="BodyType" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.BodyType != null ? Model.BodyType : "n/a")</p>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="Transmission" class="control-label"></label>
-                    <input asp-for="Transmission" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="Transmission" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.Transmission != null ? Model.Transmission : "n/a")</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="DriveTrain" class="control-label"></label>
-                    <input asp-for="DriveTrain" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="DriveTrain" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.DriveTrain != null ? Model.DriveTrain : "n/a")</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Colour" class="control-label"></label>
-                    <input asp-for="Colour" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="Colour" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.Colour != null ? Model.Colour : "n/a")</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="FuelType" class="control-label"></label>
-                    <input asp-for="FuelType" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="FuelType" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.FuelType != null ? Model.FuelType : "n/a")</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Doors" class="control-label"></label>
-                    <input asp-for="Doors" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="Doors" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.Doors != null ? Model.Doors.ToString() : "n/a")</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Seats" class="control-label"></label>
-                    <input asp-for="Seats" class="form-control" readonly />
+                <div class="form-group form-inline">
+                    <label asp-for="Seats" class="control-label col-3"></label>
+                    <p class="col-9">@(Model.Seats != null? Model.Seats.ToString():"n/a")</p>
                 </div>
             </div>
 
