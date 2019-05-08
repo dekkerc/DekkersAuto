@@ -2,9 +2,11 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-<div class="row">
+<div class="row text-center">
     <partial name="_BannerAlert" model="Model" />
-    <img src="~/images/Dekkers.PNG" class="img-fluid d-none d-sm-block" alt="Image of Dekkers Auto" />
-    <br />
+    <img src="~/images/dekkers_auto.jpg" class="img-fluid mx-auto d-none d-sm-block" alt="Image of Dekkers Auto" />
+</div>
+<br />
+<div class="row">
     <a asp-action="Index" asp-controller="Inventory" class="btn btn-primary mx-auto">View Inventory</a>
 </div>

@@ -71,6 +71,11 @@ namespace DekkersAuto.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                viewModel.ColourList = Util.GetColours();
+                viewModel.MakeList = _dbService.GetMakeList();
+                viewModel.ModelList = _dbService.GetModelList();
+                viewModel.TransmissionList = Util.GetTransmissions();
+                viewModel.Options = _dbService.GetOptions();
                 return View(viewModel);
             }
 

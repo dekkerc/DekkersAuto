@@ -98,6 +98,7 @@ namespace DekkersAuto.Web
         public async Task AddOptionsToListingAsync(Guid carId, List<Guid> selectedOptions)
         {
             await _db.CarOptions.AddRangeAsync(selectedOptions.Select(o => new CarOption { CarId = carId, OptionId = o }));
+            await _db.SaveChangesAsync();
         }
 
         public async Task AddImagesToListingAsync(Guid listingId, List<IFormFile> images)

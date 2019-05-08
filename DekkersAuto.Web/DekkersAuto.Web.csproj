@@ -18,7 +18,6 @@
   <ItemGroup>
     <Folder Include="Models\About\" />
     <Folder Include="Models\Services\" />
-    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 
