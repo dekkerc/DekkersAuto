@@ -13,7 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DekkersAuto.Web
+namespace DekkersAuto.Web.Services
 {
     public class DbService
     {

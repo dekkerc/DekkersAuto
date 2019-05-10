@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DekkersAuto.Web.Data;
 using DekkersAuto.Web.Data.Models;
 using DekkersAuto.Web.Models.Inventory;
+using DekkersAuto.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

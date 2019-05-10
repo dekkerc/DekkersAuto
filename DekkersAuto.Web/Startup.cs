@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using DekkersAuto.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DekkersAuto.Web.Services;
 
 namespace DekkersAuto.Web
 {
@@ -54,7 +55,7 @@ namespace DekkersAuto.Web
            });
 
             services.AddScoped<DbService>();
-
+            services.AddTransient<IEmailService, EmailService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

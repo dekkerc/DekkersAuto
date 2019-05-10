@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 using DekkersAuto.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using DekkersAuto.Web.Models.Home;
+using DekkersAuto.Web.Services;
 
 namespace DekkersAuto.Web.Controllers
 {
     public class HomeController : Controller
     {
         private DbService _dbService;
+        private IEmailService _emailService;
 
-        public HomeController(DbService dbService)
+        public HomeController(DbService dbService, IEmailService emailService)
         {
             _dbService = dbService;
+            _emailService = emailService;
         }
         public IActionResult Index()
         {
@@ -35,9 +38,9 @@ namespace DekkersAuto.Web.Controllers
         /// Action to send an email from a customer to the DekkersAuto account
         /// </summary>
         /// <param name="model">Model containing parameters required to send an email</param>
-        public void Contact(ContactViewModel model)
+        public async Task Contact(ContactViewModel model)
         {
-            //TODO: Send email functionality
+            await _emailService.SendEmail(model.Email, "", model.Message);
 
         }
 
