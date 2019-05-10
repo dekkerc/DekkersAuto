@@ -92,8 +92,8 @@ namespace DekkersAuto.Web.Controllers
                 Seats = viewModel.Seats,
                 Kilometers = viewModel.Kilometers,
                 Transmission = viewModel.Transmission,
-                Year = viewModel.Year
-
+                Year = viewModel.Year,
+                Price = viewModel.Price
             };
 
             var createdListing = await _dbService.AddListingAsync(listing);

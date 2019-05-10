@@ -33,6 +33,8 @@ namespace DekkersAuto.Web.Models.Inventory
         [Required]
         public string Description { get; set; }
         public List<string> ImageStrings { get; set; }
+        [Required]
+        public double? Price { get; set; }
 
         public void Populate(Listing listing)
         {
@@ -51,6 +53,7 @@ namespace DekkersAuto.Web.Models.Inventory
             Transmission = listing.Transmission;
             Colour = listing.Colour;
             DriveTrain = listing.DriveTrain;
+            Price = listing.Price;
         }
     }
 }

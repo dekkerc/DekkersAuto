@@ -158,6 +158,7 @@ namespace DekkersAuto.Web
             listing.DriveTrain = viewModel.DriveTrain;
             listing.Doors = viewModel.Doors;
             listing.Colour = viewModel.Colour;
+            listing.Price = viewModel.Price;
             _db.Listings.Update(listing);
             _db.SaveChanges();
 

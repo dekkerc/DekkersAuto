@@ -86,5 +86,9 @@ namespace DekkersAuto.Web.Data.Models
         /// Gets and sets the Images
         /// </summary>
         public virtual IEnumerable<Image> Images { get; set; }
+        /// <summary>
+        /// Gets and sets the Price 
+        /// </summary>
+        public double? Price { get; set; }
     }
 }
