@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DekkersAuto.Web.Data.Migrations
+namespace DekkersAuto.Web.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,6 +45,81 @@ namespace DekkersAuto.Web.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Banners",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Text = table.Column<string>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Banners", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ListingOptions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ListingId = table.Column<Guid>(nullable: false),
+                    OptionId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ListingOptions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Listings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Make = table.Column<string>(nullable: true),
+                    Model = table.Column<string>(nullable: true),
+                    Kilometers = table.Column<int>(nullable: true),
+                    Colour = table.Column<string>(nullable: true),
+                    FuelType = table.Column<string>(nullable: true),
+                    Transmission = table.Column<string>(nullable: true),
+                    DriveTrain = table.Column<string>(nullable: true),
+                    Year = table.Column<int>(nullable: true),
+                    BodyType = table.Column<string>(nullable: true),
+                    Doors = table.Column<int>(nullable: true),
+                    Seats = table.Column<int>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Listings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Makes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Makes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Options",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Description = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Options", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,8 +168,8 @@ namespace DekkersAuto.Web.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
                 },
@@ -138,8 +213,8 @@ namespace DekkersAuto.Web.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    Name = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -149,6 +224,45 @@ namespace DekkersAuto.Web.Data.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ListingId = table.Column<Guid>(nullable: false),
+                    ImageString = table.Column<string>(nullable: true),
+                    IsFeature = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_Listings_ListingId",
+                        column: x => x.ListingId,
+                        principalTable: "Listings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Models",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    MakeId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Models", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Models_Makes_MakeId",
+                        column: x => x.MakeId,
+                        principalTable: "Makes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -191,6 +305,16 @@ namespace DekkersAuto.Web.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_ListingId",
+                table: "Images",
+                column: "ListingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Models_MakeId",
+                table: "Models",
+                column: "MakeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -211,10 +335,31 @@ namespace DekkersAuto.Web.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Banners");
+
+            migrationBuilder.DropTable(
+                name: "Images");
+
+            migrationBuilder.DropTable(
+                name: "ListingOptions");
+
+            migrationBuilder.DropTable(
+                name: "Models");
+
+            migrationBuilder.DropTable(
+                name: "Options");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Listings");
+
+            migrationBuilder.DropTable(
+                name: "Makes");
         }
     }
 }

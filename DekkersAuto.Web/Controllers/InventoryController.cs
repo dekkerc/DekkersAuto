@@ -175,5 +175,12 @@ namespace DekkersAuto.Web.Controllers
             return PartialView("_InventoryListPartial", result);
         }
 
+        public IActionResult SearchOptions(string searchTerm)
+        {
+            var viewModel = _dbService.SearchOptions(searchTerm);
+
+            return PartialView("_OptionsList", viewModel);
+        }
+
     }
 }

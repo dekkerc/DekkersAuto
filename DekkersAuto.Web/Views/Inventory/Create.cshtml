@@ -103,17 +103,13 @@
         <div class="card">
             <h5 class="card-header">Options</h5>
             <div class="card-body">
-                <div class="btn-group-toggle text-center" data-toggle="buttons">
-                    @foreach (var option in Model.Options)
-                    {
-                        <label class="btn btn-outline-info clickable-preferred-code">
-                            <input type="checkbox" name="SelectedOptions" value=@option.Id>@option.Description
-                        </label>
-                    }
+                <input name="searchTerm" type="text" id="optionsSearch" />
+                <div id="searchResults">
+                    <partial name="_OptionsList" model="Model.Options"/>
                 </div>
             </div>
         </div>
-
+        <br/>
     }
     <div class="card">
         <div class="card-body">
@@ -131,3 +127,17 @@
         <input type="submit" value="Create" class="btn btn-primary" />
     </div>
 </form>
+
+<script type="text/javascript">
+    document.getElementById("optionsSearch").oninput(function (e) {
+        let input = e.target.value;
+        $.ajax({
+            type: "POST",
+            url: "/Inventory/SearchOptions?searchTerm=" + input,
+            success: function (response) {
+                $("#searchResults").html(response);
+            }
+
+        });
+    });
+</script>

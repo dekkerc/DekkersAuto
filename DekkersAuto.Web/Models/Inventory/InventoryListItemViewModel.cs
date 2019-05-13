@@ -41,5 +41,10 @@ namespace DekkersAuto.Web.Models.Inventory
         /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// Gets and sets the Price
+        /// </summary>
+        public double? Price { get; set; }
+
     }
 }

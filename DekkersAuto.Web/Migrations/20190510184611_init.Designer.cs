@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace DekkersAuto.Web.Data.Migrations
+namespace DekkersAuto.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190508161844_Option-Update")]
-    partial class OptionUpdate
+    [Migration("20190510184611_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,52 +33,6 @@ namespace DekkersAuto.Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Banners");
-                });
-
-            modelBuilder.Entity("DekkersAuto.Web.Data.Models.Car", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("BodyType");
-
-                    b.Property<string>("Colour");
-
-                    b.Property<int?>("Doors");
-
-                    b.Property<string>("DriveTrain");
-
-                    b.Property<string>("FuelType");
-
-                    b.Property<int?>("Kilometers");
-
-                    b.Property<string>("Make");
-
-                    b.Property<string>("Model");
-
-                    b.Property<int?>("Seats");
-
-                    b.Property<string>("Transmission");
-
-                    b.Property<int?>("Year");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cars");
-                });
-
-            modelBuilder.Entity("DekkersAuto.Web.Data.Models.CarOption", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("CarId");
-
-                    b.Property<Guid>("OptionId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Options");
                 });
 
             modelBuilder.Entity("DekkersAuto.Web.Data.Models.Image", b =>
@@ -104,17 +58,51 @@ namespace DekkersAuto.Web.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("CarId");
+                    b.Property<string>("BodyType");
+
+                    b.Property<string>("Colour");
 
                     b.Property<string>("Description");
 
+                    b.Property<int?>("Doors");
+
+                    b.Property<string>("DriveTrain");
+
+                    b.Property<string>("FuelType");
+
+                    b.Property<int?>("Kilometers");
+
+                    b.Property<string>("Make");
+
+                    b.Property<string>("Model");
+
+                    b.Property<double?>("Price");
+
+                    b.Property<int?>("Seats");
+
                     b.Property<string>("Title");
+
+                    b.Property<string>("Transmission");
+
+                    b.Property<int?>("Year");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CarId");
-
                     b.ToTable("Listings");
+                });
+
+            modelBuilder.Entity("DekkersAuto.Web.Data.Models.ListingOption", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("ListingId");
+
+                    b.Property<Guid>("OptionId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ListingOptions");
                 });
 
             modelBuilder.Entity("DekkersAuto.Web.Data.Models.Make", b =>
@@ -143,6 +131,18 @@ namespace DekkersAuto.Web.Data.Migrations
                     b.HasIndex("MakeId");
 
                     b.ToTable("Models");
+                });
+
+            modelBuilder.Entity("DekkersAuto.Web.Data.Models.Option", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Options");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -311,14 +311,6 @@ namespace DekkersAuto.Web.Data.Migrations
                     b.HasOne("DekkersAuto.Web.Data.Models.Listing")
                         .WithMany("Images")
                         .HasForeignKey("ListingId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("DekkersAuto.Web.Data.Models.Listing", b =>
-                {
-                    b.HasOne("DekkersAuto.Web.Data.Models.Car", "Car")
-                        .WithMany()
-                        .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

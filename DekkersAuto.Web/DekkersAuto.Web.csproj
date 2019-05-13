@@ -16,6 +16,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\" />
     <Folder Include="Models\About\" />
     <Folder Include="Models\Services\" />
   </ItemGroup>

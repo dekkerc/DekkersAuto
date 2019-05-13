@@ -68,7 +68,8 @@ namespace DekkersAuto.Web.Services
                     ImageUrl = l.Images.OrderBy(i => i.IsFeature).FirstOrDefault().ImageString,
                     Title = l.Title,
                     Year = l.Year,
-                    Kilometers = l.Kilometers
+                    Kilometers = l.Kilometers,
+                    Price = l.Price
                 })
                 .ToList();
         }
@@ -188,6 +189,11 @@ namespace DekkersAuto.Web.Services
 
             _db.Listings.Update(listing);
             _db.SaveChanges();
+        }
+
+        public List<OptionModel> SearchOptions(string searchTerm)
+        {
+            return _db.Options.Where(o => o.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())).Select(o => new OptionModel { Description = o.Description, Id = o.Id }).ToList();
         }
 
         public List<string> GetListingOptions(Guid carId)
