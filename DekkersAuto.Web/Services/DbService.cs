@@ -193,7 +193,7 @@ namespace DekkersAuto.Web.Services
 
         public List<OptionModel> SearchOptions(string searchTerm)
         {
-            return _db.Options.Where(o => o.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())).Select(o => new OptionModel { Description = o.Description, Id = o.Id }).ToList();
+            return _db.Options.Where(o => string.IsNullOrEmpty(searchTerm) || o.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())).Select(o => new OptionModel { Description = o.Description, Id = o.Id }).ToList();
         }
 
         public List<string> GetListingOptions(Guid carId)

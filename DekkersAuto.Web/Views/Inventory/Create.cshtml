@@ -127,9 +127,10 @@
         <input type="submit" value="Create" class="btn btn-primary" />
     </div>
 </form>
-
+<script src="~/lib/jquery/dist/jquery.js"></script>
 <script type="text/javascript">
-    document.getElementById("optionsSearch").oninput(function (e) {
+     $("#optionsSearch").on("input",function (e) {
+        console.log(e);
         let input = e.target.value;
         $.ajax({
             type: "POST",

@@ -90,5 +90,10 @@ namespace DekkersAuto.Web.Data.Models
         /// Gets and sets the Price 
         /// </summary>
         public double? Price { get; set; }
+        /// <summary>
+        /// Gets and sets IsActive
+        /// Represents if the listing should be shown with the active listings
+        /// </summary>
+        public bool IsActive { get; set; } = false;
     }
 }
