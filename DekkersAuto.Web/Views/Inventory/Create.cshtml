@@ -117,11 +117,11 @@
             <input id="imageInput"
                    type="file"
                    accept="image/*"
-                   multiple
-                   onchange="loadFile(event)"
-                   asp-for="Images">
+                   multiple>
         </div>
-        <div id="imageList"></div>
+        <div id="imageList">
+            <partial name="_ImagesList" model="Model.ImageModels" />
+        </div>
     </div>
     <br />
     <div class="form-group">
@@ -142,4 +142,29 @@
 
         });
     });
+
+    $("#imageInput").on("change", function (e) {
+        let files = e.target.files;
+        for (var i = 0; i < files.length; i++) {
+        var reader = new FileReader();
+        reader.addEventListener("load", function (event) {
+            $.ajax({
+                type: "POST",
+                url: "/Inventory/AddImage",
+                data: {
+                    image: event.target.result,
+                    listingId: "@Model.ListingId"
+                },
+                success: function (response) {
+                    $("#imageList").append(response);
+                }
+
+            });
+        });
+
+        reader.readAsDataURL(files[i]);
+    }
+
+    });
+
 </script>

@@ -32,14 +32,14 @@ namespace DekkersAuto.Web.Models.Inventory
         public string Title { get; set; }
         [Required]
         public string Description { get; set; }
-        public List<string> ImageStrings { get; set; }
+        public List<string> Images { get; set; }
         [Required]
         public double? Price { get; set; }
 
         public void Populate(Listing listing)
         {
             ListingId = listing.Id;
-            ImageStrings = listing.Images?.Select(i => i.ImageString).ToList();
+            Images = listing.Images?.Select(i => i.ImageString).ToList();
             Description = listing.Description;
             Title = listing.Title;
             Seats = listing.Seats;

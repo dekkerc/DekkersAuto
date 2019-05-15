@@ -135,24 +135,16 @@ namespace DekkersAuto.Web.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task AddImagesToListingAsync(Guid listingId, List<IFormFile> images)
+        public async Task<Image> AddImageToListingAsync(Guid listingId, string image)
         {
-            foreach (var image in images)
+            var listingImage = await _db.Images.AddAsync(new Image
             {
-                using (var stream = new MemoryStream())
-                {
-                    await image.CopyToAsync(stream);
-                    var listingImage = new Image
-                    {
-                        ImageString = "data:image/png;base64," + Convert.ToBase64String(stream.ToArray()),
-                        ListingId = listingId
-                    };
-                    await _db.Images.AddAsync(listingImage);
-                }
-            }
-
+                ImageString = image,
+                ListingId = listingId
+            });
             await _db.SaveChangesAsync();
 
+            return listingImage.Entity;
         }
 
         public async Task DeleteListingAsync(Guid listingId)
@@ -165,20 +157,46 @@ namespace DekkersAuto.Web.Services
             }
         }
 
+        public async Task SetFeatureImage(Guid imageId, Guid listingId)
+        {
+            var listingImages =_db.Images.Where(i => i.ListingId == listingId);
+
+            var featureImage = listingImages.SingleOrDefault(i => i.IsFeature);
+
+            if(featureImage != null && featureImage.Id != imageId)
+            {
+                featureImage.IsFeature = false;
+                _db.Images.Update(featureImage);
+                await _db.SaveChangesAsync();
+            }
+
+            var selectedImage = await _db.Images.FindAsync(imageId);
+            selectedImage.IsFeature = !selectedImage.IsFeature;
+            _db.Images.Update(selectedImage);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task DeleteImageAsync(Guid imageId)
+        {
+            var image = await _db.Images.FindAsync(imageId);
+            if (image != null)
+            {
+                _db.Images.Remove(image);
+                await _db.SaveChangesAsync();
+            }
+        }
+
         public async Task<Listing> GetListing(Guid listingId)
         {
             var listing = await _db.Listings.FindAsync(listingId);
-            if (listing != null)
-            {
-                listing.Images = GetListingImages(listingId);
-            }
+           
             return listing;
         }
 
 
-        public IEnumerable<Image> GetListingImages(Guid listingId)
+        public IEnumerable<ImageModel> GetListingImages(Guid listingId)
         {
-            return _db.Images.Where(i => i.ListingId == listingId).ToList();
+            return _db.Images.Where(i => i.ListingId == listingId).OrderBy(i => i.IsFeature).Select(i => new ImageModel { IsFeature = i.IsFeature, ListingId = i.ListingId, Id = i.Id, Source = i.ImageString});
         }
 
         public async Task<OptionModel> UpdateOption(Guid optionId, Guid listingId)
@@ -237,28 +255,7 @@ namespace DekkersAuto.Web.Services
         }
 
 
-        public async Task UpdateListingImages(IEnumerable<IFormFile> images, Guid listingId)
-        {
-            if (images != null && images.Count() > 0)
-            {
-                var currentImages = _db.Images.Where(i => i.ListingId == listingId).ToList();
-                _db.Images.RemoveRange(currentImages);
-                foreach (var image in images)
-                {
-                    using (var stream = new MemoryStream())
-                    {
-                        await image.CopyToAsync(stream);
-                        var listingImage = new Image
-                        {
-                            ImageString = "data:image/png;base64," + Convert.ToBase64String(stream.ToArray()),
-                            ListingId = listingId
-                        };
-                        await _db.Images.AddAsync(listingImage);
-                    }
-                }
-
-            }
-        }
+        
 
         public List<OptionModel> SearchOptions(string searchTerm, Guid listingId)
         {

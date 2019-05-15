@@ -72,8 +72,6 @@ namespace DekkersAuto.Web.Controllers
             return View("Create", viewModel);
         }
 
-
-
         /// <summary>
         /// Action to create a new inventory item.
         /// </summary>
@@ -93,9 +91,7 @@ namespace DekkersAuto.Web.Controllers
             }
 
             await _dbService.UpdateListing(viewModel);
-
-            await _dbService.UpdateListingImages(viewModel.Images, viewModel.ListingId);
-
+            
             return RedirectToAction("Index");
         }
 
@@ -141,6 +137,33 @@ namespace DekkersAuto.Web.Controllers
             var viewModel = _dbService.SearchOptions(searchTerm, listingId);
 
             return PartialView("_OptionsList", viewModel);
+        }
+
+        public async Task<IActionResult> AddImage(string image, Guid listingId)
+        {
+            var listingImage = await _dbService.AddImageToListingAsync(listingId, image);
+
+            return PartialView("_Image", new ImageModel
+            {
+                Source = listingImage.ImageString,
+                IsFeature = listingImage.IsFeature,
+                ListingId = listingId,
+                Id = listingImage.Id
+            });
+        }
+        public async Task RemoveImage(Guid imageId)
+        {
+            await _dbService.DeleteImageAsync(imageId);
+        }
+
+        public async Task<IActionResult> SetFeatureImage(Guid imageId, Guid listingId)
+        {
+            await _dbService.SetFeatureImage(imageId, listingId);
+
+            var images = _dbService.GetListingImages(listingId);
+
+            return PartialView("_ImagesList", images);
+
         }
 
     }

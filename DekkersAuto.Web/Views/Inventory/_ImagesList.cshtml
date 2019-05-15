@@ -1,0 +1,10 @@
+﻿@model IEnumerable<DekkersAuto.Web.Models.Inventory.ImageModel>
+
+
+@if(Model != null)
+{
+    @foreach(var image in Model)
+    {
+        <partial name="_Image" model="image" />
+    }
+}

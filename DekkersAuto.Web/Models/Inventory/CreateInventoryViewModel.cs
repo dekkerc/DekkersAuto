@@ -16,6 +16,6 @@ namespace DekkersAuto.Web.Models.Inventory
         public List<SelectListItem> ColourList { get; set; }
         public List<Guid> SelectedOptions { get; set; }
         public List<OptionModel> Options { get; set; }
-        public List<IFormFile> Images { get; set; }
+        public List<ImageModel> ImageModels { get; set; }
     }
 }
