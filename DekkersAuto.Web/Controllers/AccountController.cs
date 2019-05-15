@@ -231,6 +231,13 @@ namespace DekkersAuto.Web.Controllers
             return View(model);
         }
 
+        public IActionResult InProgressListings()
+        {
+            var model = _dbService.GetInactiveInventoryList();
+
+            return View(model);
+        }
+
 
     }
 }

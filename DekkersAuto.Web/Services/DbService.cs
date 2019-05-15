@@ -57,9 +57,43 @@ namespace DekkersAuto.Web.Services
             return _db.Options.Select(o => new OptionModel { Id = o.Id, Description = o.Description }).ToList();
         }
 
-        public List<InventoryListItemViewModel> GetInventoryList()
+        public List<OptionModel> GetOptions(Guid listingId)
+        {
+            return _db.Options
+                .Select(o =>
+                new OptionModel
+                {
+                    Id = o.Id,
+                    Description = o.Description,
+                    ListingId = listingId,
+                    Selected = _db.ListingOptions
+                                    .Any(lo => lo.ListingId == listingId && lo.OptionId == o.Id)
+                })
+                .ToList();
+        }
+
+
+        public List<InventoryListItemViewModel> GetActiveInventoryList()
         {
             return _db.Listings
+                .Where(l => l.IsActive)
+                .Include(l => l.Images)
+                .Select(l => new InventoryListItemViewModel
+                {
+                    ListingId = l.Id,
+                    Description = l.Description,
+                    ImageUrl = l.Images.OrderBy(i => i.IsFeature).FirstOrDefault().ImageString,
+                    Title = l.Title,
+                    Year = l.Year,
+                    Kilometers = l.Kilometers,
+                    Price = l.Price
+                })
+                .ToList();
+        }
+        public List<InventoryListItemViewModel> GetInactiveInventoryList()
+        {
+            return _db.Listings
+                .Where(l => !l.IsActive)
                 .Include(l => l.Images)
                 .Select(l => new InventoryListItemViewModel
                 {
@@ -133,9 +167,11 @@ namespace DekkersAuto.Web.Services
 
         public async Task<Listing> GetListing(Guid listingId)
         {
-            var listing = await _db.Listings.FirstOrDefaultAsync(l => l.Id == listingId);
-
-            listing.Images = GetListingImages(listingId);
+            var listing = await _db.Listings.FindAsync(listingId);
+            if (listing != null)
+            {
+                listing.Images = GetListingImages(listingId);
+            }
             return listing;
         }
 
@@ -145,10 +181,38 @@ namespace DekkersAuto.Web.Services
             return _db.Images.Where(i => i.ListingId == listingId).ToList();
         }
 
-        public async Task UpdateListing(EditInventoryViewModel viewModel)
+        public async Task<OptionModel> UpdateOption(Guid optionId, Guid listingId)
+        {
+            var option = _db.ListingOptions.SingleOrDefault(o => o.OptionId == optionId && o.ListingId == listingId);
+            bool isSelected;
+            if (option == null)
+            {
+                _db.ListingOptions.Add(new ListingOption
+                {
+                    ListingId = listingId,
+                    OptionId = optionId
+                });
+                isSelected = true;
+            }
+            else
+            {
+                _db.ListingOptions.Remove(option);
+                isSelected = false;
+            }
+            await _db.SaveChangesAsync();
+            return new OptionModel
+            {
+                ListingId = listingId,
+                Id = optionId,
+                Description = _db.Options.Find(optionId).Description,
+                Selected = isSelected
+            };
+        }
+
+        public async Task UpdateListing(ListingBase viewModel)
         {
             var listing = await _db.Listings.FindAsync(viewModel.ListingId);
-            
+
             listing.BodyType = viewModel.BodyType;
             listing.Model = viewModel.Model;
             listing.Make = viewModel.Make;
@@ -167,11 +231,19 @@ namespace DekkersAuto.Web.Services
             listing.Description = viewModel.Description;
             listing.Title = viewModel.Title;
 
-            if (viewModel.Images != null && viewModel.Images.Count > 0)
+
+            _db.Listings.Update(listing);
+            _db.SaveChanges();
+        }
+
+
+        public async Task UpdateListingImages(IEnumerable<IFormFile> images, Guid listingId)
+        {
+            if (images != null && images.Count() > 0)
             {
-                var images = _db.Images.Where(i => i.ListingId == viewModel.ListingId).ToList();
-                _db.Images.RemoveRange(images);
-                foreach (var image in viewModel.Images)
+                var currentImages = _db.Images.Where(i => i.ListingId == listingId).ToList();
+                _db.Images.RemoveRange(currentImages);
+                foreach (var image in images)
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -179,27 +251,36 @@ namespace DekkersAuto.Web.Services
                         var listingImage = new Image
                         {
                             ImageString = "data:image/png;base64," + Convert.ToBase64String(stream.ToArray()),
-                            ListingId = viewModel.ListingId
+                            ListingId = listingId
                         };
                         await _db.Images.AddAsync(listingImage);
                     }
                 }
 
             }
-
-            _db.Listings.Update(listing);
-            _db.SaveChanges();
         }
 
-        public List<OptionModel> SearchOptions(string searchTerm)
+        public List<OptionModel> SearchOptions(string searchTerm, Guid listingId)
         {
-            return _db.Options.Where(o => string.IsNullOrEmpty(searchTerm) || o.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())).Select(o => new OptionModel { Description = o.Description, Id = o.Id }).ToList();
+            return _db.Options
+                .Where(o => string.IsNullOrEmpty(searchTerm) || o.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                .Select(o =>
+                    new OptionModel
+                    {
+                        Description = o.Description,
+                        Id = o.Id,
+                        ListingId = listingId,
+                        Selected = _db.ListingOptions
+                                        .Where(lo => lo.ListingId == listingId && lo.OptionId == o.Id)
+                                        .Any()
+                    })
+                .ToList();
         }
 
-        public List<string> GetListingOptions(Guid carId)
+        public List<string> GetListingOptions(Guid listingId)
         {
             return _db.ListingOptions
-                .Where(c => c.ListingId == carId)
+                .Where(c => c.ListingId == listingId)
                 .Join(
                     _db.Options,
                     listingOption => listingOption.OptionId,

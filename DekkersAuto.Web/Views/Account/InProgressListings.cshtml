@@ -1,0 +1,9 @@
+﻿@model IEnumerable<DekkersAuto.Web.Models.Inventory.InventoryListItemViewModel>
+@{
+    ViewData["Title"] = "In Progress Listings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>In Progress Listings</h1>
+
+<partial name="_InventoryListPartial" model="Model" />

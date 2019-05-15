@@ -36,7 +36,7 @@ namespace DekkersAuto.Web.Controllers
                     ColourList = Util.GetColours()
                 },
 
-                InventoryList = _dbService.GetInventoryList()
+                InventoryList = _dbService.GetActiveInventoryList()
             };
 
 
@@ -48,7 +48,14 @@ namespace DekkersAuto.Web.Controllers
         /// </summary>
         /// <returns>The create page</returns>
         [HttpGet, Authorize]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
+        {
+            var listing = await _dbService.AddListingAsync(new Listing());
+            
+            return Redirect("CreateListing?listingId=" + listing.Id.ToString());
+        }
+
+        public IActionResult CreateListing(Guid listingId)
         {
             var viewModel = new CreateInventoryViewModel
             {
@@ -56,11 +63,13 @@ namespace DekkersAuto.Web.Controllers
                 MakeList = _dbService.GetMakeList(),
                 ModelList = _dbService.GetModelList(),
                 TransmissionList = Util.GetTransmissions(),
-                Options = _dbService.GetOptions()
+                Options = _dbService.GetOptions(listingId),
+                ListingId = listingId
             };
-
-            return View(viewModel);
+            return View("Create", viewModel);
         }
+
+
 
         /// <summary>
         /// Action to create a new inventory item.
@@ -80,27 +89,9 @@ namespace DekkersAuto.Web.Controllers
                 return View(viewModel);
             }
 
-            var listing = new Listing
-            {
-                Title = viewModel.Title,
-                Description = viewModel.Description,
-                Make = viewModel.Make,
-                Model = viewModel.Model,
-                BodyType = viewModel.BodyType,
-                Colour = viewModel.Colour,
-                FuelType = viewModel.FuelType,
-                Doors = viewModel.Doors,
-                Seats = viewModel.Seats,
-                Kilometers = viewModel.Kilometers,
-                Transmission = viewModel.Transmission,
-                Year = viewModel.Year,
-                Price = viewModel.Price
-            };
+            await _dbService.UpdateListing(viewModel);
 
-            var createdListing = await _dbService.AddListingAsync(listing);
-
-            await _dbService.AddImagesToListingAsync(createdListing.Id, viewModel.Images);
-            await _dbService.AddOptionsToListingAsync(createdListing.Id, viewModel.SelectedOptions);
+            await _dbService.UpdateListingImages(viewModel.Images, viewModel.ListingId);
 
             return RedirectToAction("Index");
         }
@@ -146,6 +137,7 @@ namespace DekkersAuto.Web.Controllers
             }
 
             await _dbService.UpdateListing(viewModel);
+            await _dbService.UpdateListingImages(viewModel.Images, viewModel.ListingId);
 
             return RedirectToAction("Index");
         }
@@ -175,9 +167,16 @@ namespace DekkersAuto.Web.Controllers
             return PartialView("_InventoryListPartial", result);
         }
 
-        public IActionResult SearchOptions(string searchTerm)
+        public async Task<IActionResult> UpdateOption(Guid optionId, Guid listingId)
         {
-            var viewModel = _dbService.SearchOptions(searchTerm);
+            var model = await _dbService.UpdateOption(optionId, listingId);
+
+            return PartialView("_Option", model);
+        }
+
+        public IActionResult SearchOptions(string searchTerm, Guid listingId)
+        {
+            var viewModel = _dbService.SearchOptions(searchTerm, listingId);
 
             return PartialView("_OptionsList", viewModel);
         }

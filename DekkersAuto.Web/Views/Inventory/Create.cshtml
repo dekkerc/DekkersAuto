@@ -8,8 +8,9 @@
 <h1>Create</h1>
 
 <hr />
-<form asp-action="Create" method="POST" enctype="multipart/form-data">
+<form asp-action="CreateInventory" method="POST" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="ListingId" hidden id="listingId" />
     <div class="card">
         <div class="card-body">
             <div class="row">
@@ -103,13 +104,13 @@
         <div class="card">
             <h5 class="card-header">Options</h5>
             <div class="card-body">
-                <input name="searchTerm" type="text" id="optionsSearch" />
+                <input name="searchTerm" type="text" id="optionsSearch" class="form-control" placeholder="Search" />
                 <div id="searchResults">
-                    <partial name="_OptionsList" model="Model.Options"/>
+                    <partial name="_OptionsList" model="Model.Options" />
                 </div>
             </div>
         </div>
-        <br/>
+        <br />
     }
     <div class="card">
         <div class="card-body">
@@ -129,12 +130,12 @@
 </form>
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script type="text/javascript">
-     $("#optionsSearch").on("input",function (e) {
-        console.log(e);
+    $("#optionsSearch").on("input", function (e) {
         let input = e.target.value;
+        let id = '@Model.ListingId';
         $.ajax({
             type: "POST",
-            url: "/Inventory/SearchOptions?searchTerm=" + input,
+            url: "/Inventory/SearchOptions?searchTerm=" + input + "&listingId=" + id,
             success: function (response) {
                 $("#searchResults").html(response);
             }

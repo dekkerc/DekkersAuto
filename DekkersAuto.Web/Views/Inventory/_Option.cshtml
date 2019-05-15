@@ -1,0 +1,11 @@
+﻿@model DekkersAuto.Web.Models.Inventory.OptionModel
+
+<div class="@Model.Id">
+    <div class="float-left col-2">
+        <a asp-controller="Inventory" asp-action="UpdateOption" asp-all-route-data='new Dictionary<string, string>{ { "optionId", Model.Id.ToString() }, { "listingId", Model.ListingId.ToString() } }'
+           data-ajax="true" data-ajax-mode="replace" data-ajax-update=".@Model.Id"
+           class="col-12 btn @(Model.Selected?"btn-danger":"btn-primary")" style="margin-top:10px">
+            @Model.Description
+        </a>
+    </div>
+</div>
