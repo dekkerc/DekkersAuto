@@ -55,17 +55,20 @@ namespace DekkersAuto.Web.Controllers
             return Redirect("CreateListing?listingId=" + listing.Id.ToString());
         }
 
-        public IActionResult CreateListing(Guid listingId)
+        public async Task<IActionResult> CreateListing(Guid listingId)
         {
+            var listing = await _dbService.GetListing(listingId);
             var viewModel = new CreateInventoryViewModel
             {
                 ColourList = Util.GetColours(),
                 MakeList = _dbService.GetMakeList(),
                 ModelList = _dbService.GetModelList(),
                 TransmissionList = Util.GetTransmissions(),
-                Options = _dbService.GetOptions(listingId),
-                ListingId = listingId
+                Options = _dbService.GetOptions(listingId)
             };
+
+            viewModel.Populate(listing);
+
             return View("Create", viewModel);
         }
 
@@ -100,48 +103,7 @@ namespace DekkersAuto.Web.Controllers
         {
             await _dbService.DeleteListingAsync(listingId);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(Guid listingId)
-        {
-            var listing = await _dbService.GetListing(listingId);
-
-            var viewModel = new EditInventoryViewModel
-            {
-                ColourList = Util.GetColours(),
-                MakeList = _dbService.GetMakeList(),
-                ModelList = _dbService.GetModelList(),
-                TransmissionList = Util.GetTransmissions()
-            };
-            viewModel.Populate(listing);
-
-            return View(viewModel);
-        }
-
-        /// <summary>
-        /// Method to update the contents of a listing object
-        /// Returns back to the listing index page
-        /// </summary>
-        /// <param name="viewModel">Edit model containing parameters for updating the listing</param>
-        /// <returns>The inventory index</returns>
-        [HttpPost]
-        public async Task<IActionResult> Edit(EditInventoryViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                viewModel.ColourList = Util.GetColours();
-                viewModel.MakeList = _dbService.GetMakeList();
-                viewModel.ModelList = _dbService.GetModelList();
-                viewModel.TransmissionList = Util.GetTransmissions();
-                return View(viewModel);
-            }
-
-            await _dbService.UpdateListing(viewModel);
-            await _dbService.UpdateListingImages(viewModel.Images, viewModel.ListingId);
-
-            return RedirectToAction("Index");
-        }
-
+        
         [HttpGet]
         public async Task<IActionResult> Details(Guid listingId)
         {
