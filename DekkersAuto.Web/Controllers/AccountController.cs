@@ -17,31 +17,25 @@ namespace DekkersAuto.Web.Controllers
     /// </summary>
     public class AccountController : Controller
     {
-        /// <summary>
-        /// Gets and sets the UserManager
-        /// Usermanager handles creation and manipulation of users
-        /// </summary>
-        private UserManager<IdentityUser> UserManager { get; set; }
-
-
-        /// <summary>
-        /// Gets and sets the SignInManager
-        /// The Signin manager handles signing in and signing out users
-        /// </summary>
-        private SignInManager<IdentityUser> SignInManager { get; set; }
-
         private DbService _dbService;
+
+        private IdentityService _identityService;
+
+        private BannerService _bannerService;
+
+        private ListingService _listingService;
 
         /// <summary>
         /// Default constructor. Has services passed in through dependency injection
         /// </summary>
         /// <param name="userManager">The user manager for IdentityUsers</param>
         /// <param name="roleManager">The role manager for IdentityRoles</param>
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, DbService dbService)
+        public AccountController(DbService dbService, IdentityService identityService, BannerService bannerService, ListingService listingService)
         {
-            UserManager = userManager;
-            SignInManager = signInManager;
             _dbService = dbService;
+            _identityService = identityService;
+            _bannerService = bannerService;
+            _listingService = listingService;
         }
 
         /// <summary>
@@ -53,7 +47,7 @@ namespace DekkersAuto.Web.Controllers
         {
 
             var model = new AccountViewModel();
-            var banner = _dbService.GetBanner();
+            var banner = _bannerService.GetBanner();
             var bannerModel = new BannerViewModel();
             if(banner!= null)
             {
@@ -63,16 +57,16 @@ namespace DekkersAuto.Web.Controllers
             }
             model.BannerModel = bannerModel;
 
-            var user = await UserManager.GetUserAsync(User);
+            var user = await _identityService.GetIdentityUserAsync(User);
             model.ManageAccountModel = new ManageAccountViewModel
             {
                 Username = user.UserName,
-                Role = _dbService.GetRole(user),
-                RoleTypes = _dbService.GetRoles(),
+                Role = _identityService.GetRole(user),
+                RoleTypes = _identityService.GetRoles(),
                 UserId = user.Id
             };
 
-            var accountList = _dbService.GetAccountList(user.Id);
+            var accountList = _identityService.GetAccountList(user.Id);
 
             model.AccountList = accountList;
 
@@ -90,10 +84,8 @@ namespace DekkersAuto.Web.Controllers
         public IActionResult Create()
         {
             var model = new ManageAccountViewModel();
-            model.RoleTypes = _dbService.GetRoles();
-
+            model.RoleTypes = _identityService.GetRoles();
             
-
             return View(model);
         }
 
@@ -110,10 +102,10 @@ namespace DekkersAuto.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.RoleTypes = _dbService.GetRoles();
+                model.RoleTypes = _identityService.GetRoles();
                 return View(model);
             }
-            var result = await _dbService.CreateUserAsync(model.Username, model.Password, model.Role);
+            var result = await _identityService.CreateUserAsync(model.Username, model.Password, model.Role);
 
             return RedirectToAction("Index");
         }
@@ -142,7 +134,7 @@ namespace DekkersAuto.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await SignInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
+                var result = await _identityService.SignInAsync(model.Username, model.Password);
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
@@ -161,13 +153,13 @@ namespace DekkersAuto.Web.Controllers
         public IActionResult ManageBanner(BannerViewModel model)
         {
 
-            if (_dbService.GetBanner() == null)
+            if (_bannerService.GetBanner() == null)
             {
-                _dbService.CreateBanner(model);
+                _bannerService.CreateBanner(model);
             }
             else
             {
-                _dbService.UpdateBanner(model);
+                _bannerService.UpdateBanner(model);
             }
 
             return PartialView("_ManageBanner", model);
@@ -179,31 +171,31 @@ namespace DekkersAuto.Web.Controllers
         /// <returns>Redirects to the homepage</returns>
         public async Task<IActionResult> Logout()
         {
-            await SignInManager.SignOutAsync();
+            await _identityService.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
         public async Task Delete(string userId)
         {
-            await _dbService.DeleteUserAsync(userId);
+            await _identityService.DeleteUserAsync(userId);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(ManageAccountViewModel model)
         {
-            await _dbService.UpdateUser(model);
+            await _identityService.UpdateUser(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid userId)
         {
-            var user = await _dbService.GetUser(userId);
+            var user = await _identityService.GetUser(userId);
             var model = new ManageAccountViewModel
             {
                 Username = user.UserName,
-                Role = _dbService.GetRole(user),
-                RoleTypes = _dbService.GetRoles(),
+                Role = _identityService.GetRole(user),
+                RoleTypes = _identityService.GetRoles(),
                 UserId = user.Id
             };
 
@@ -212,15 +204,15 @@ namespace DekkersAuto.Web.Controllers
 
         public async Task<IActionResult> AccountList()
         {
-            var user = await UserManager.GetUserAsync(User);
-            var model =_dbService.GetAccountList(user.Id);
+            var user = await _identityService.GetIdentityUserAsync(User);
+            var model =_identityService.GetAccountList(user.Id);
 
             return View(model);
         }
 
         public IActionResult Banner()
         {
-            var banner = _dbService.GetBanner();
+            var banner = _bannerService.GetBanner();
             var model = new BannerViewModel();
             if (banner != null)
             {
@@ -233,7 +225,7 @@ namespace DekkersAuto.Web.Controllers
 
         public IActionResult InProgressListings()
         {
-            var model = _dbService.GetInactiveInventoryList();
+            var model = _listingService.GetInactiveInventoryList();
 
             return View(model);
         }

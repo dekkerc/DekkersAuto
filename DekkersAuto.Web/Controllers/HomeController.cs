@@ -14,16 +14,18 @@ namespace DekkersAuto.Web.Controllers
     public class HomeController : Controller
     {
         private DbService _dbService;
+        private BannerService _bannerService;
         private IEmailService _emailService;
 
-        public HomeController(DbService dbService, IEmailService emailService)
+        public HomeController(DbService dbService, IEmailService emailService, BannerService bannerService)
         {
             _dbService = dbService;
             _emailService = emailService;
+            _bannerService = bannerService;
         }
         public IActionResult Index()
         {
-            var banner = _dbService.GetBanner();
+            var banner = _bannerService.GetBanner();
             var viewModel = new BannerViewModel();
             if(banner != null)
             {
