@@ -18,12 +18,18 @@ namespace DekkersAuto.Web.Controllers
     public class InventoryController : Controller
     {
         private DbService _dbService;
+        private ListingService _listingService;
+        private OptionsService _optionsService;
+        private ImageService _imageService;
 
 
 
-        public InventoryController(DbService service)
+        public InventoryController(DbService service, ListingService listingService, OptionsService optionsService, ImageService imageService)
         {
             _dbService = service;
+            _listingService = listingService;
+            _optionsService = optionsService;
+            _imageService = imageService;
         }
 
 
@@ -38,7 +44,7 @@ namespace DekkersAuto.Web.Controllers
                     ColourList = Util.GetColours()
                 },
 
-                InventoryList = _dbService.GetActiveInventoryList()
+                InventoryList = _listingService.GetActiveInventoryList()
             };
 
 
@@ -52,21 +58,21 @@ namespace DekkersAuto.Web.Controllers
         [HttpGet, Authorize]
         public async Task<IActionResult> Create()
         {
-            var listing = await _dbService.AddListingAsync(new Listing());
+            var listing = await _listingService.AddListingAsync(new Listing());
             
             return Redirect("CreateListing?listingId=" + listing.Id.ToString());
         }
 
         public async Task<IActionResult> CreateListing(Guid listingId)
         {
-            var listing = await _dbService.GetListing(listingId);
+            var listing = await _listingService.GetListing(listingId);
             var viewModel = new CreateInventoryViewModel
             {
                 ColourList = Util.GetColours(),
                 MakeList = _dbService.GetMakeList(),
                 ModelList = _dbService.GetModelList(),
                 TransmissionList = Util.GetTransmissions(),
-                Options = _dbService.GetOptions(listingId)
+                Options = _optionsService.GetOptions(listingId)
             };
 
             viewModel.Populate(listing);
@@ -88,28 +94,28 @@ namespace DekkersAuto.Web.Controllers
                 viewModel.MakeList = _dbService.GetMakeList();
                 viewModel.ModelList = _dbService.GetModelList();
                 viewModel.TransmissionList = Util.GetTransmissions();
-                viewModel.Options = _dbService.GetOptions();
+                viewModel.Options = _optionsService.GetOptions();
                 return View(viewModel);
             }
 
-            await _dbService.UpdateListing(viewModel);
+            await _listingService.UpdateListing(viewModel);
             
             return RedirectToAction("Index");
         }
 
         public async Task Delete(Guid listingId)
         {
-            await _dbService.DeleteListingAsync(listingId);
+            await _listingService.DeleteListingAsync(listingId);
         }
         
         [HttpGet]
         public async Task<IActionResult> Details(Guid listingId)
         {
-            var listing = await _dbService.GetListing(listingId);
+            var listing = await _listingService.GetListing(listingId);
 
             var viewModel = new DetailViewModel();
             viewModel.Populate(listing);
-            viewModel.Options = _dbService.GetListingOptions(listing.Id);
+            viewModel.Options = _optionsService.GetListingOptions(listing.Id);
             return View(viewModel);
         }
 
@@ -129,21 +135,21 @@ namespace DekkersAuto.Web.Controllers
 
         public async Task<IActionResult> UpdateOption(Guid optionId, Guid listingId)
         {
-            var model = await _dbService.UpdateOption(optionId, listingId);
+            var model = await _optionsService.UpdateOption(optionId, listingId);
 
             return PartialView("_Option", model);
         }
 
         public IActionResult SearchOptions(string searchTerm, Guid listingId)
         {
-            var viewModel = _dbService.SearchOptions(searchTerm, listingId);
+            var viewModel = _optionsService.SearchOptions(searchTerm, listingId);
 
             return PartialView("_OptionsList", viewModel);
         }
 
         public async Task<IActionResult> AddImage(string image, Guid listingId)
         {
-            var listingImage = await _dbService.AddImageToListingAsync(listingId, image);
+            var listingImage = await _imageService.AddImageToListingAsync(listingId, image);
 
             return PartialView("_Image", new ImageModel
             {
@@ -155,14 +161,14 @@ namespace DekkersAuto.Web.Controllers
         }
         public async Task RemoveImage(Guid imageId)
         {
-            await _dbService.DeleteImageAsync(imageId);
+            await _imageService.DeleteImageAsync(imageId);
         }
 
         public async Task<IActionResult> SetFeatureImage(Guid imageId, Guid listingId)
         {
-            await _dbService.SetFeatureImage(imageId, listingId);
+            await _imageService.SetFeatureImage(imageId, listingId);
 
-            var images = _dbService.GetListingImages(listingId);
+            var images = _imageService.GetListingImages(listingId);
 
             return PartialView("_ImagesList", images);
 
