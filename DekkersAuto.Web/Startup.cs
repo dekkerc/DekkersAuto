@@ -14,6 +14,8 @@ using DekkersAuto.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DekkersAuto.Web.Services;
+using Autofac;
+using DekkersAuto.Dependencies;
 
 namespace DekkersAuto.Web
 {
@@ -55,8 +57,18 @@ namespace DekkersAuto.Web
            });
 
             services.AddScoped<DbService>();
+            services.AddScoped<ImageService>();
+            services.AddScoped<BannerService>();
+            services.AddScoped<ListingService>();
+            services.AddScoped<OptionsService>();
+            services.AddScoped<IdentityService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule<DependencyModule>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,7 +82,6 @@ namespace DekkersAuto.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

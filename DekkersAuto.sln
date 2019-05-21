@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DekkersAuto.Web", "DekkersAuto.Web\DekkersAuto.Web.csproj", "{98AB78B9-1AE3-4E26-8BAA-1FD6A231F27C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DekkersAuto.Web", "DekkersAuto.Web\DekkersAuto.Web.csproj", "{98AB78B9-1AE3-4E26-8BAA-1FD6A231F27C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DekkersAuto.Services", "DekkersAuto.Services\DekkersAuto.Services.csproj", "{209FA696-2ECE-4797-AF0B-F414AF6A6CEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DekkersAuto.Dependencies", "DekkersAuto.Dependencies\DekkersAuto.Dependencies.csproj", "{4E81A39D-F19B-4197-AD37-F541E7A123C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{98AB78B9-1AE3-4E26-8BAA-1FD6A231F27C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98AB78B9-1AE3-4E26-8BAA-1FD6A231F27C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98AB78B9-1AE3-4E26-8BAA-1FD6A231F27C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{209FA696-2ECE-4797-AF0B-F414AF6A6CEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{209FA696-2ECE-4797-AF0B-F414AF6A6CEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{209FA696-2ECE-4797-AF0B-F414AF6A6CEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{209FA696-2ECE-4797-AF0B-F414AF6A6CEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E81A39D-F19B-4197-AD37-F541E7A123C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E81A39D-F19B-4197-AD37-F541E7A123C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E81A39D-F19B-4197-AD37-F541E7A123C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E81A39D-F19B-4197-AD37-F541E7A123C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
