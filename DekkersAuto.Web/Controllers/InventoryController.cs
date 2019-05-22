@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using DekkersAuto.Web.Data;
-using DekkersAuto.Web.Data.Models;
+using DekkersAuto.Services.Database;
+using DekkersAuto.Services.Models;
+using DekkersAuto.Services.Services;
 using DekkersAuto.Web.Models.Inventory;
-using DekkersAuto.Web.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace DekkersAuto.Web.Controllers
 {
@@ -21,26 +17,28 @@ namespace DekkersAuto.Web.Controllers
         private ListingService _listingService;
         private OptionsService _optionsService;
         private ImageService _imageService;
+        private ApiService _apiService;
 
 
-
-        public InventoryController(DbService service, ListingService listingService, OptionsService optionsService, ImageService imageService)
+        public InventoryController(DbService service, ListingService listingService, OptionsService optionsService, ImageService imageService, ApiService apiService)
         {
             _dbService = service;
             _listingService = listingService;
             _optionsService = optionsService;
             _imageService = imageService;
+            _apiService = apiService;
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var makeList = (await _apiService.GetMakeListAsync()).Select(m => new SelectListItem { Text = m, Value = m }).ToList();
             var model = new InventoryViewModel
             {
+
                 Filter = new FilterViewModel
                 {
-                    ModelList = _dbService.GetModelList(),
-                    MakeList = _dbService.GetMakeList(),
+                    MakeList = makeList,
                     ColourList = Util.GetColours()
                 },
 
@@ -58,7 +56,7 @@ namespace DekkersAuto.Web.Controllers
         [HttpGet, Authorize]
         public async Task<IActionResult> Create()
         {
-            var listing = await _listingService.AddListingAsync(new Listing());
+            var listing = await _listingService.AddListingAsync();
             
             return Redirect("CreateListing?listingId=" + listing.Id.ToString());
         }
@@ -66,11 +64,11 @@ namespace DekkersAuto.Web.Controllers
         public async Task<IActionResult> CreateListing(Guid listingId)
         {
             var listing = await _listingService.GetListing(listingId);
+            var makeList = (await _apiService.GetMakeListAsync()).Select(m => new SelectListItem { Text = m, Value = m }).ToList();
             var viewModel = new CreateInventoryViewModel
             {
                 ColourList = Util.GetColours(),
-                MakeList = _dbService.GetMakeList(),
-                ModelList = _dbService.GetModelList(),
+                MakeList = makeList,
                 TransmissionList = Util.GetTransmissions(),
                 Options = _optionsService.GetOptions(listingId)
             };
@@ -90,15 +88,36 @@ namespace DekkersAuto.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var makeList = (await _apiService.GetMakeListAsync()).Select(m => new SelectListItem { Text = m, Value = m }).ToList();
+                var modelList = (await _apiService.GetModelListAsync(viewModel.Make)).Select(m => new SelectListItem { Text = m, Value = m }).ToList();
                 viewModel.ColourList = Util.GetColours();
-                viewModel.MakeList = _dbService.GetMakeList();
-                viewModel.ModelList = _dbService.GetModelList();
+                viewModel.MakeList = makeList;
+                viewModel.ModelList = modelList;
                 viewModel.TransmissionList = Util.GetTransmissions();
-                viewModel.Options = _optionsService.GetOptions();
+                viewModel.Options = _optionsService.GetOptions(viewModel.ListingId);
                 return View(viewModel);
             }
 
-            await _listingService.UpdateListing(viewModel);
+            var listingDetailsModel = new ListingDetailsModel
+            {
+                ListingId = viewModel.ListingId,
+                Make = viewModel.Make,
+                Model = viewModel.Model,
+                Transmission = viewModel.Transmission,
+                DriveTrain = viewModel.DriveTrain,
+                Colour = viewModel.Colour,
+                Year = viewModel.Year,
+                Kilometers = viewModel.Kilometers,
+                BodyType = viewModel.BodyType,
+                FuelType = viewModel.FuelType,
+                Doors = viewModel.Doors,
+                Seats =viewModel.Seats,
+                Title = viewModel.Title,
+                Description =viewModel.Description,
+                Price = viewModel.Price
+            };
+
+            await _listingService.UpdateListing(listingDetailsModel);
             
             return RedirectToAction("Index");
         }
@@ -115,7 +134,7 @@ namespace DekkersAuto.Web.Controllers
 
             var viewModel = new DetailViewModel();
             viewModel.Populate(listing);
-            viewModel.Options = _optionsService.GetListingOptions(listing.Id);
+            viewModel.Options = _optionsService.GetListingOptions(listing.ListingId);
             return View(viewModel);
         }
 
@@ -128,6 +147,7 @@ namespace DekkersAuto.Web.Controllers
         [HttpPost]
         public IActionResult Filter(FilterViewModel viewModel)
         {
+
             var result = _dbService.FilterListings(viewModel);
 
             return PartialView("_InventoryListPartial", result);

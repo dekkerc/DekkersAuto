@@ -42,5 +42,10 @@ namespace DekkersAuto.Web
                 }
             };
         }
+
+        public static List<SelectListItem> GetSelectList(List<string> list)
+        {
+            return list.Select(i => new SelectListItem { Text = i, Value = i }).ToList();
+        }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DekkersAuto.Web.Data.Models;
+using DekkersAuto.Database.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace DekkersAuto.Web.Data
+namespace DekkersAuto.Database
 {
     public class ApplicationDbContext : IdentityDbContext
     {

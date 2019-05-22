@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DekkersAuto.Services.Database;
+using DekkersAuto.Services.Models;
 using DekkersAuto.Web.Models;
 using DekkersAuto.Web.Models.Account;
-using DekkersAuto.Web.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -48,27 +47,25 @@ namespace DekkersAuto.Web.Controllers
 
             var model = new AccountViewModel();
             var banner = _bannerService.GetBanner();
-            var bannerModel = new BannerViewModel();
-            if(banner!= null)
-            {
-                bannerModel.BannerId = banner.Id;
-                bannerModel.IsActive = banner.IsActive;
-                bannerModel.Text = banner.Text;
-            }
-            model.BannerModel = bannerModel;
+            
+            model.BannerModel = banner;
 
             var user = await _identityService.GetIdentityUserAsync(User);
             model.ManageAccountModel = new ManageAccountViewModel
             {
                 Username = user.UserName,
                 Role = _identityService.GetRole(user),
-                RoleTypes = _identityService.GetRoles(),
+                RoleTypes = Util.GetSelectList(_identityService.GetRoles()),
                 UserId = user.Id
             };
 
             var accountList = _identityService.GetAccountList(user.Id);
 
-            model.AccountList = accountList;
+            model.AccountList = new AccountListViewModel
+            {
+                UserId = user.Id,
+                Accounts = accountList.Select(a => new AccountItemViewModel { AccountId = a.UserId, Username = a.Username, Role = a.Role }).ToList()
+            };
 
             return View(model);
         }
@@ -84,8 +81,8 @@ namespace DekkersAuto.Web.Controllers
         public IActionResult Create()
         {
             var model = new ManageAccountViewModel();
-            model.RoleTypes = _identityService.GetRoles();
-            
+            model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+
             return View(model);
         }
 
@@ -96,13 +93,13 @@ namespace DekkersAuto.Web.Controllers
         /// <param name="model">Model containing details of user to create</param>
         /// <returns>Redirects to the Account index on success</returns>
         [HttpPost]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ManageAccountViewModel model)
         {
 
             if (!ModelState.IsValid)
             {
-                model.RoleTypes = _identityService.GetRoles();
+                model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
                 return View(model);
             }
             var result = await _identityService.CreateUserAsync(model.Username, model.Password, model.Role);
@@ -150,7 +147,7 @@ namespace DekkersAuto.Web.Controllers
             return View(model);
         }
 
-        public IActionResult ManageBanner(BannerViewModel model)
+        public IActionResult ManageBanner(BannerModel model)
         {
 
             if (_bannerService.GetBanner() == null)
@@ -183,7 +180,14 @@ namespace DekkersAuto.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ManageAccountViewModel model)
         {
-            await _identityService.UpdateUser(model);
+            var accountModel = new AccountModel
+            {
+                Username = model.Username,
+                Role = model.Role,
+                UserId = model.UserId
+            };
+
+            await _identityService.UpdateUser(accountModel);
             return RedirectToAction("Index");
         }
 
@@ -195,7 +199,7 @@ namespace DekkersAuto.Web.Controllers
             {
                 Username = user.UserName,
                 Role = _identityService.GetRole(user),
-                RoleTypes = _identityService.GetRoles(),
+                RoleTypes = Util.GetSelectList(_identityService.GetRoles()),
                 UserId = user.Id
             };
 
@@ -205,7 +209,7 @@ namespace DekkersAuto.Web.Controllers
         public async Task<IActionResult> AccountList()
         {
             var user = await _identityService.GetIdentityUserAsync(User);
-            var model =_identityService.GetAccountList(user.Id);
+            var model = _identityService.GetAccountList(user.Id);
 
             return View(model);
         }
@@ -213,14 +217,8 @@ namespace DekkersAuto.Web.Controllers
         public IActionResult Banner()
         {
             var banner = _bannerService.GetBanner();
-            var model = new BannerViewModel();
-            if (banner != null)
-            {
-                model.BannerId = banner.Id;
-                model.IsActive = banner.IsActive;
-                model.Text = banner.Text;
-            }
-            return View(model);
+            
+            return View(banner);
         }
 
         public IActionResult InProgressListings()

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DekkersAuto.Web.Models;
-using Microsoft.AspNetCore.Authorization;
 using DekkersAuto.Web.Models.Home;
-using DekkersAuto.Web.Services;
+using DekkersAuto.Services.Database;
+using DekkersAuto.Services.Email;
+using DekkersAuto.Services.Models;
 
 namespace DekkersAuto.Web.Controllers
 {
@@ -26,14 +24,8 @@ namespace DekkersAuto.Web.Controllers
         public IActionResult Index()
         {
             var banner = _bannerService.GetBanner();
-            var viewModel = new BannerViewModel();
-            if(banner != null)
-            {
-                viewModel.BannerId = banner.Id;
-                viewModel.Text = banner.Text;
-                viewModel.IsActive = banner.IsActive;
-            }
-            return View(viewModel);
+            
+            return View(banner);
         }
         
         /// <summary>

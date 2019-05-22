@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DekkersAuto.Web.Data;
-using DekkersAuto.Web.Data.Models;
-using DekkersAuto.Web.Models.Inventory;
+using DekkersAuto.Database;
+using DekkersAuto.Database.Models;
+using DekkersAuto.Services.Models;
 
-namespace DekkersAuto.Web.Services
+namespace DekkersAuto.Services.Database
 {
     public class OptionsService : DbServiceBase
     {
@@ -19,11 +19,11 @@ namespace DekkersAuto.Web.Services
             return _db.Options.Select(o => new OptionModel { Id = o.Id, Description = o.Description }).ToList();
         }
 
-        public List<OptionModel> GetOptions(Guid listingId)
+        public List<SelectedOptionModel> GetOptions(Guid listingId)
         {
             return _db.Options
                 .Select(o =>
-                new OptionModel
+                new SelectedOptionModel
                 {
                     Id = o.Id,
                     Description = o.Description,
@@ -40,7 +40,7 @@ namespace DekkersAuto.Web.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task<OptionModel> UpdateOption(Guid optionId, Guid listingId)
+        public async Task<SelectedOptionModel> UpdateOption(Guid optionId, Guid listingId)
         {
             var option = _db.ListingOptions.SingleOrDefault(o => o.OptionId == optionId && o.ListingId == listingId);
             bool isSelected;
@@ -59,7 +59,7 @@ namespace DekkersAuto.Web.Services
                 isSelected = false;
             }
             await _db.SaveChangesAsync();
-            return new OptionModel
+            return new SelectedOptionModel
             {
                 ListingId = listingId,
                 Id = optionId,
@@ -68,12 +68,12 @@ namespace DekkersAuto.Web.Services
             };
         }
 
-        public List<OptionModel> SearchOptions(string searchTerm, Guid listingId)
+        public List<SelectedOptionModel> SearchOptions(string searchTerm, Guid listingId)
         {
             return _db.Options
                 .Where(o => string.IsNullOrEmpty(searchTerm) || o.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                 .Select(o =>
-                    new OptionModel
+                    new SelectedOptionModel
                     {
                         Description = o.Description,
                         Id = o.Id,

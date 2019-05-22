@@ -1,33 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace DekkersAuto.Web.Data.Models
+namespace DekkersAuto.Services.Models
 {
-    /// <summary>
-    /// Represents an image for a listing
-    /// </summary>
-    public class Image
+    public class ImageDetailsModel
     {
         /// <summary>
         /// Gets and sets the Id
         /// </summary>
-        [Key]
-        public Guid Id { get; set; }
+        public Guid ImageId { get; set; }
         /// <summary>
         /// Gets and sets the ListingId
         /// Represents the listing that the image is for
         /// </summary>
-        [ForeignKey("Listing")]
         public Guid ListingId { get; set; }
         /// <summary>
         /// Gets and sets the image string
         /// A base64 encoded image url
         /// </summary>
-        public string ImageString { get; set; }
+        public string Source { get; set; }
 
         /// <summary>
         /// Gets and sets IsFeature

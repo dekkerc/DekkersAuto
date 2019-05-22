@@ -1,9 +1,8 @@
-﻿using DekkersAuto.Web.Data.Models;
+﻿using DekkersAuto.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace DekkersAuto.Web.Models.Inventory
 {
@@ -36,10 +35,10 @@ namespace DekkersAuto.Web.Models.Inventory
         [Required]
         public double? Price { get; set; }
 
-        public void Populate(Listing listing)
+        public void Populate(ListingDetailsImageModel listing)
         {
-            ListingId = listing.Id;
-            Images = listing.Images?.Select(i => i.ImageString).ToList();
+            ListingId = listing.ListingId;
+            Images = listing.Images;
             Description = listing.Description;
             Title = listing.Title;
             Seats = listing.Seats;

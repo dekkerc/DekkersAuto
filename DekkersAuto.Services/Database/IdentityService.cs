@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using DekkersAuto.Web.Data;
-using DekkersAuto.Web.Models.Account;
+using DekkersAuto.Database;
+using DekkersAuto.Services.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace DekkersAuto.Web.Services
+namespace DekkersAuto.Services.Database
 {
     public class IdentityService : DbServiceBase
     {
@@ -33,18 +32,9 @@ namespace DekkersAuto.Web.Services
             SignInManager = signInManager;
         }
 
-        public List<SelectListItem> GetRoles()
+        public List<string> GetRoles()
         {
-            var roles = new List<SelectListItem>();
-            RoleManager.Roles.ToList().ForEach(r =>
-            {
-                roles.Add(new SelectListItem
-                {
-                    Text = r.Name,
-                    Value = r.Name
-                });
-            });
-            return roles;
+            return RoleManager.Roles.Select(r => r.Name).ToList();
         }
 
         public async Task<bool> CreateUserAsync(string username, string password, string role)
@@ -72,7 +62,7 @@ namespace DekkersAuto.Web.Services
             return _db.UserRoles.SingleOrDefault(ur => ur.UserId == user.Id)?.RoleId;
         }
 
-        public async Task UpdateUser(ManageAccountViewModel model)
+        public async Task UpdateUser(AccountModel model)
         {
             var user = await UserManager.FindByIdAsync(model.UserId);
 
@@ -99,7 +89,7 @@ namespace DekkersAuto.Web.Services
 
 
 
-        public AccountListViewModel GetAccountList(string id)
+        public List<AccountModel> GetAccountList(string id)
         {
             var accountList = _db.UserRoles.Join(
                 _db.Users,
@@ -121,14 +111,9 @@ namespace DekkersAuto.Web.Services
                     Role = role.Name
                 })
                 .Where(u => u.Id != id)
-                .Select(u => new AccountItemViewModel { AccountId = u.Id, Username = u.Username, Role = u.Role })
+                .Select(u => new AccountModel { UserId = u.Id, Username = u.Username, Role = u.Role })
                 .ToList();
-
-            return new AccountListViewModel
-            {
-                UserId = id,
-                Accounts = accountList
-            };
+            return accountList;
         }
 
         public async Task<IdentityUser> GetIdentityUserAsync(ClaimsPrincipal user)

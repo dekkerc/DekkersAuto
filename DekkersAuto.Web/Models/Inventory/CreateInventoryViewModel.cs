@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DekkersAuto.Services.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace DekkersAuto.Web.Models.Inventory
         public List<SelectListItem> TransmissionList { get; set; }
         public List<SelectListItem> ColourList { get; set; }
         public List<Guid> SelectedOptions { get; set; }
-        public List<OptionModel> Options { get; set; }
+        public List<SelectedOptionModel> Options { get; set; }
         public List<ImageModel> ImageModels { get; set; }
     }
 }

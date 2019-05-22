@@ -1,12 +1,12 @@
-﻿using System;
+﻿using DekkersAuto.Database;
+using DekkersAuto.Database.Models;
+using DekkersAuto.Services.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DekkersAuto.Web.Data;
-using DekkersAuto.Web.Data.Models;
-using DekkersAuto.Web.Models;
 
-namespace DekkersAuto.Web.Services
+namespace DekkersAuto.Services.Database
 {
     public class BannerService : DbServiceBase
     {
@@ -14,17 +14,27 @@ namespace DekkersAuto.Web.Services
         {
         }
 
-        public Banner GetBanner()
+        public BannerModel GetBanner()
         {
             var banner = _db.Banners.FirstOrDefault();
-            return banner;
+            if(banner == null)
+            {
+                return null;
+            }
+            var result = new BannerModel
+            {
+                BannerId = banner.Id,
+                Text = banner.Text,
+                IsActive = banner.IsActive
+            };
+            return result;
         }
-        public void CreateBanner(BannerViewModel model)
+        public void CreateBanner(BannerModel model)
         {
             _db.Banners.Add(new Banner { Text = model.Text, IsActive = true });
             _db.SaveChanges();
         }
-        public void UpdateBanner(BannerViewModel model)
+        public void UpdateBanner(BannerModel model)
         {
             var banner = _db.Banners.Find(model.BannerId);
 

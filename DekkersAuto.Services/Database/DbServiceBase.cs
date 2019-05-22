@@ -1,10 +1,10 @@
-﻿using DekkersAuto.Web.Data;
+﻿using DekkersAuto.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DekkersAuto.Web.Services
+namespace DekkersAuto.Services.Database
 {
     public class DbServiceBase
     {

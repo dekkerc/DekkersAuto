@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DekkersAuto.Web.Data.Models
+namespace DekkersAuto.Database.Models
 {
     /// <summary>
     /// Class representing a manufacturer of cars

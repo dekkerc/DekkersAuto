@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DekkersAuto.Web.Data;
-using DekkersAuto.Web.Data.Models;
-using DekkersAuto.Web.Models.Inventory;
+using DekkersAuto.Database;
+using DekkersAuto.Database.Models;
+using DekkersAuto.Services.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DekkersAuto.Web.Services
+namespace DekkersAuto.Services.Database
 {
     public class ListingService : DbServiceBase
     {
@@ -15,12 +15,12 @@ namespace DekkersAuto.Web.Services
         {
         }
         
-        public List<InventoryListItemViewModel> GetActiveInventoryList()
+        public List<ListingListItemModel> GetActiveInventoryList()
         {
             return _db.Listings
                 .Where(l => l.IsActive)
                 .Include(l => l.Images)
-                .Select(l => new InventoryListItemViewModel
+                .Select(l => new ListingListItemModel
                 {
                     ListingId = l.Id,
                     Description = l.Description,
@@ -32,12 +32,12 @@ namespace DekkersAuto.Web.Services
                 })
                 .ToList();
         }
-        public List<InventoryListItemViewModel> GetInactiveInventoryList()
+        public List<ListingListItemModel> GetInactiveInventoryList()
         {
             return _db.Listings
                 .Where(l => !l.IsActive)
                 .Include(l => l.Images)
-                .Select(l => new InventoryListItemViewModel
+                .Select(l => new ListingListItemModel
                 {
                     ListingId = l.Id,
                     Description = l.Description,
@@ -48,6 +48,11 @@ namespace DekkersAuto.Web.Services
                     Price = l.Price
                 })
                 .ToList();
+        }
+        
+        public async Task<Listing> AddListingAsync()
+        {
+            return await AddListingAsync(new Listing());
         }
 
         public async Task<Listing> AddListingAsync(Listing listing)
@@ -67,15 +72,34 @@ namespace DekkersAuto.Web.Services
             }
         }
 
-        public async Task<Listing> GetListing(Guid listingId)
+        public async Task<ListingDetailsImageModel> GetListing(Guid listingId)
         {
             var listing = await _db.Listings.FindAsync(listingId);
+            var result = new ListingDetailsImageModel
+            {
+                ListingId = listing.Id,
+                Images = listing.Images?.Select(i => i.ImageString).ToList(),
+                Description = listing.Description,
+                Title = listing.Title,
+                Seats = listing.Seats,
+                Doors = listing.Doors,
+                FuelType = listing.FuelType,
+                BodyType = listing.BodyType,
+                Kilometers = listing.Kilometers,
+                Year = listing.Year,
+                Make = listing.Make,
+                Model = listing.Model,
+                Transmission = listing.Transmission,
+                Colour = listing.Colour,
+                DriveTrain = listing.DriveTrain,
+                Price = listing.Price
+            };
 
-            return listing;
+            return result;
         }
 
 
-        public async Task UpdateListing(ListingBase viewModel)
+        public async Task UpdateListing(ListingDetailsModel viewModel)
         {
             var listing = await _db.Listings.FindAsync(viewModel.ListingId);
 

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using DekkersAuto.Database;
+using DekkersAuto.Database.Models;
+using DekkersAuto.Services.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DekkersAuto.Web.Data;
-using DekkersAuto.Web.Data.Models;
-using DekkersAuto.Web.Models.Inventory;
 
-namespace DekkersAuto.Web.Services
+namespace DekkersAuto.Services.Database
 {
     public class ImageService : DbServiceBase
     {
@@ -55,9 +55,19 @@ namespace DekkersAuto.Web.Services
         }
 
 
-        public IEnumerable<ImageModel> GetListingImages(Guid listingId)
+        public IEnumerable<ImageDetailsModel> GetListingImages(Guid listingId)
         {
-            return _db.Images.Where(i => i.ListingId == listingId).OrderBy(i => i.IsFeature).Select(i => new ImageModel { IsFeature = i.IsFeature, ListingId = i.ListingId, Id = i.Id, Source = i.ImageString });
+            return _db.Images
+                .Where(i => i.ListingId == listingId)
+                .OrderBy(i => i.IsFeature)
+                .Select(i => 
+                    new ImageDetailsModel
+                    {
+                        ImageId = i.Id,
+                        IsFeature = i.IsFeature,
+                        ListingId = i.ListingId,
+                        Source = i.ImageString
+                    });
         }
 
     }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DekkersAuto.Web.Data.Models
+namespace DekkersAuto.Database.Models
 {
     /// <summary>
     /// Represents a listing for a car
