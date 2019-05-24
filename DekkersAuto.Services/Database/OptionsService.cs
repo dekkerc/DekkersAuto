@@ -28,8 +28,7 @@ namespace DekkersAuto.Services.Database
                     Id = o.Id,
                     Description = o.Description,
                     ListingId = listingId,
-                    Selected = _db.ListingOptions
-                                    .Any(lo => lo.ListingId == listingId && lo.OptionId == o.Id)
+                    Selected = o.ListingOptions.Any( l => l.ListingId == listingId)
                 })
                 .ToList();
         }

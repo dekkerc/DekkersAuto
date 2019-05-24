@@ -22,7 +22,7 @@ namespace DekkersAuto.Dependencies
 
             builder.RegisterType<EmailService>().As<IEmailService>();
 
-            builder.RegisterType<HttpClient>().SingleInstance();
+            builder.Register(c => new HttpClient { BaseAddress = new Uri("https://vpic.nhtsa.dot.gov/api/") }).SingleInstance();
         }
     }
 }

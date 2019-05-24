@@ -14,5 +14,6 @@ namespace DekkersAuto.Database.Models
         [Key]
         public Guid Id { get; set; }
         public string Description { get; set; }
+        public virtual ICollection<ListingOption> ListingOptions { get; set; }
     }
 }

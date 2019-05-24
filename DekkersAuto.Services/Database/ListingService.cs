@@ -14,7 +14,7 @@ namespace DekkersAuto.Services.Database
         public ListingService(ApplicationDbContext db) : base(db)
         {
         }
-        
+
         public List<ListingListItemModel> GetActiveInventoryList()
         {
             return _db.Listings
@@ -49,7 +49,7 @@ namespace DekkersAuto.Services.Database
                 })
                 .ToList();
         }
-        
+
         public async Task<Listing> AddListingAsync()
         {
             return await AddListingAsync(new Listing());
@@ -74,28 +74,29 @@ namespace DekkersAuto.Services.Database
 
         public async Task<ListingDetailsImageModel> GetListing(Guid listingId)
         {
-            var listing = await _db.Listings.FindAsync(listingId);
-            var result = new ListingDetailsImageModel
-            {
-                ListingId = listing.Id,
-                Images = listing.Images?.Select(i => i.ImageString).ToList(),
-                Description = listing.Description,
-                Title = listing.Title,
-                Seats = listing.Seats,
-                Doors = listing.Doors,
-                FuelType = listing.FuelType,
-                BodyType = listing.BodyType,
-                Kilometers = listing.Kilometers,
-                Year = listing.Year,
-                Make = listing.Make,
-                Model = listing.Model,
-                Transmission = listing.Transmission,
-                Colour = listing.Colour,
-                DriveTrain = listing.DriveTrain,
-                Price = listing.Price
-            };
+            var listing = await _db.Listings
+                .Where(l => l.Id == listingId)
+                .Select(l => new ListingDetailsImageModel
+                {
+                    ListingId = l.Id,
+                    Images = l.Images.Select(i => i.ImageString).ToList(),
+                    Description = l.Description,
+                    Title = l.Title,
+                    Seats = l.Seats,
+                    Doors = l.Doors,
+                    FuelType = l.FuelType,
+                    BodyType = l.BodyType,
+                    Kilometers = l.Kilometers,
+                    Year = l.Year,
+                    Make = l.Make,
+                    Model = l.Model,
+                    Transmission = l.Transmission,
+                    Colour = l.Colour,
+                    DriveTrain = l.DriveTrain,
+                    Price = l.Price
+                }).SingleOrDefaultAsync();
 
-            return result;
+            return listing;
         }
 
 

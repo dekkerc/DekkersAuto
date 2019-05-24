@@ -15,7 +15,6 @@ namespace DekkersAuto.Services.Services
         public ApiService(HttpClient client)
         {
             _client = client;
-            _client.BaseAddress = new Uri("https://vpic.nhtsa.dot.gov/api/");
         }
 
 
