@@ -76,7 +76,7 @@ namespace DekkersAuto.Web.Controllers
         /// Populates the Create model with the available user roles
         /// </summary>
         /// <returns>The create view</returns>
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Create()
         {
@@ -93,7 +93,7 @@ namespace DekkersAuto.Web.Controllers
         /// <param name="model">Model containing details of user to create</param>
         /// <returns>Redirects to the Account index on success</returns>
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ManageAccountViewModel model)
         {
 
