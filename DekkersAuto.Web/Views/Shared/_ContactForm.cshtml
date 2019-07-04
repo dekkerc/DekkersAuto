@@ -4,7 +4,10 @@
             <div class="card">
                 <h5 class="card-header">Contact Us</h5>
                 <div class="card-body">
-                    <form asp-action="Contact" asp-controller="Home">
+                    <div class="alert alert-success" role="alert" style="display:none;" id="successMessage">
+                        Message Sent
+                    </div>
+                    <form asp-action="Contact" asp-controller="Home" data-ajax="true" data-ajax-success="$('#successMessage').removeAttr('style')">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input asp-for="Subject" hidden />
                         <div class="form-group">

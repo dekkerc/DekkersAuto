@@ -34,14 +34,13 @@ namespace DekkersAuto.Services.Email
             
             using (var emailMessage = new MailMessage())
             {
-                emailMessage.To.Add(new MailAddress(email));
-                emailMessage.From = new MailAddress(_configuration["Email:Email"]);
+                emailMessage.To.Add(new MailAddress(_configuration["Email:Email"]));
+                emailMessage.From = new MailAddress(email);
                 emailMessage.Subject = subject;
-                emailMessage.Body = message;
+                emailMessage.Body = $"You have received an email from {email}. \n\n{message}";
                 client.Send(emailMessage);
             }
             }
-            await Task.CompletedTask;
         }
     }
 }
