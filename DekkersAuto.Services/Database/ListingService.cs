@@ -117,11 +117,30 @@ namespace DekkersAuto.Services.Database
             listing.Price = viewModel.Price;
             listing.Description = viewModel.Description;
             listing.Title = viewModel.Title;
-            listing.IsActive = true;
 
 
             _db.Listings.Update(listing);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task ActivateListing(Guid listingId)
+        {
+            var listing = await _db.Listings.FindAsync(listingId);
+
+            listing.IsActive = true;
+
+            _db.Listings.Update(listing);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task DeactivateListing(Guid listingId)
+        {
+            var listing = await _db.Listings.FindAsync(listingId);
+
+            listing.IsActive = false;
+
+            _db.Listings.Update(listing);
+            await _db.SaveChangesAsync();
         }
 
     }

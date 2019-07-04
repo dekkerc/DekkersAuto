@@ -51,7 +51,7 @@ namespace DekkersAuto.Web.Controllers
         {
             var listing = await _listingService.AddListingAsync();
             
-            return Redirect("edit?listingId=" + listing.Id.ToString());
+            return Redirect("CreateListing?listingId=" + listing.Id.ToString());
         }
 
         public async Task<IActionResult> Edit(Guid listingId)
@@ -77,13 +77,6 @@ namespace DekkersAuto.Web.Controllers
         [HttpPost, Authorize]
         public async Task<IActionResult> Create(CreateInventoryViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                viewModel.TransmissionList = Util.GetTransmissions();
-                viewModel.Options = _optionsService.GetOptions(viewModel.ListingId);
-                return View(viewModel);
-            }
-
             var listingDetailsModel = new ListingDetailsModel
             {
                 ListingId = viewModel.ListingId,
@@ -104,7 +97,16 @@ namespace DekkersAuto.Web.Controllers
             };
 
             await _listingService.UpdateListing(listingDetailsModel);
-            
+
+            if (!ModelState.IsValid)
+            {
+                viewModel.TransmissionList = Util.GetTransmissions();
+                viewModel.Options = _optionsService.GetOptions(viewModel.ListingId);
+                return View(viewModel);
+            }
+
+            await _listingService.ActivateListing(listingDetailsModel.ListingId);
+
             return RedirectToAction("Index");
         }
 
