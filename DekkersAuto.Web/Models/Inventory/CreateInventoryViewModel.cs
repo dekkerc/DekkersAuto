@@ -11,10 +11,7 @@ namespace DekkersAuto.Web.Models.Inventory
 {
     public class CreateInventoryViewModel: ListingBase
     {
-        public List<SelectListItem> MakeList { get; set; }
-        public List<SelectListItem> ModelList { get; set; }
         public List<SelectListItem> TransmissionList { get; set; }
-        public List<SelectListItem> ColourList { get; set; }
         public List<Guid> SelectedOptions { get; set; }
         public List<SelectedOptionModel> Options { get; set; }
         public List<ImageModel> ImageModels { get; set; }

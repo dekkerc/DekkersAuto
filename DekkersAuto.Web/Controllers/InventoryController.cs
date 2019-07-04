@@ -32,16 +32,9 @@ namespace DekkersAuto.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var makeList = (await _apiService.GetMakeListAsync()).Select(m => new SelectListItem { Text = m, Value = m }).ToList();
             var model = new InventoryViewModel
             {
-
-                Filter = new FilterViewModel
-                {
-                    MakeList = makeList,
-                    ColourList = Util.GetColours()
-                },
-
+                Filter = new FilterViewModel(),
                 InventoryList = _listingService.GetActiveInventoryList()
             };
 
@@ -58,17 +51,15 @@ namespace DekkersAuto.Web.Controllers
         {
             var listing = await _listingService.AddListingAsync();
             
-            return Redirect("CreateListing?listingId=" + listing.Id.ToString());
+            return Redirect("edit?listingId=" + listing.Id.ToString());
         }
 
-        public async Task<IActionResult> CreateListing(Guid listingId)
+        public async Task<IActionResult> Edit(Guid listingId)
         {
             var listing = await _listingService.GetListing(listingId);
-            var makeList = (await _apiService.GetMakeListAsync()).Select(m => new SelectListItem { Text = m, Value = m }).ToList();
+
             var viewModel = new CreateInventoryViewModel
             {
-                ColourList = Util.GetColours(),
-                MakeList = makeList,
                 TransmissionList = Util.GetTransmissions(),
                 Options = _optionsService.GetOptions(listingId)
             };
@@ -88,11 +79,6 @@ namespace DekkersAuto.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var makeList = (await _apiService.GetMakeListAsync()).Select(m => new SelectListItem { Text = m, Value = m }).ToList();
-                var modelList = (await _apiService.GetModelListAsync(viewModel.Make)).Select(m => new SelectListItem { Text = m, Value = m }).ToList();
-                viewModel.ColourList = Util.GetColours();
-                viewModel.MakeList = makeList;
-                viewModel.ModelList = modelList;
                 viewModel.TransmissionList = Util.GetTransmissions();
                 viewModel.Options = _optionsService.GetOptions(viewModel.ListingId);
                 return View(viewModel);

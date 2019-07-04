@@ -115,12 +115,9 @@ namespace DekkersAuto.Services.Database
             listing.Doors = viewModel.Doors;
             listing.Colour = viewModel.Colour;
             listing.Price = viewModel.Price;
-            _db.Listings.Update(listing);
-            _db.SaveChanges();
-
-            //Update Listing Info
             listing.Description = viewModel.Description;
             listing.Title = viewModel.Title;
+            listing.IsActive = true;
 
 
             _db.Listings.Update(listing);

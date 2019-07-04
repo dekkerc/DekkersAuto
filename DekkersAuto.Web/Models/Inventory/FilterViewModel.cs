@@ -14,22 +14,6 @@ namespace DekkersAuto.Web.Models.Inventory
     public class FilterViewModel : FilterModel
     {
         /// <summary>
-        /// Gets and sets the MakeList
-        /// Represents the list of makes to select from
-        /// </summary>
-        public List<SelectListItem> MakeList { get; set; }
-        /// <summary>
-        /// Gets and sets the ModelList 
-        /// Represents the ModelList to select from
-        /// </summary>
-        public List<SelectListItem> ModelList { get; set; }
-       
-        /// <summary>
-        /// Gets and sets the ColourList
-        /// Represents the list of colours available
-        /// </summary>
-        public List<SelectListItem> ColourList { get; set; }
-        /// <summary>
         /// Gets and sets the YearFrom
         /// Represents the low end of a year filter range
         /// </summary>
