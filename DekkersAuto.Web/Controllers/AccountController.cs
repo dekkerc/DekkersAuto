@@ -104,7 +104,17 @@ namespace DekkersAuto.Web.Controllers
             }
             var result = await _identityService.CreateUserAsync(model.Username, model.Password, model.Role);
 
-            return RedirectToAction("Index");
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+            return View(model);
         }
 
         /// <summary>
@@ -180,6 +190,11 @@ namespace DekkersAuto.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ManageAccountViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+                return View(model);
+            }
             var accountModel = new AccountModel
             {
                 Username = model.Username,
@@ -187,8 +202,19 @@ namespace DekkersAuto.Web.Controllers
                 UserId = model.UserId
             };
 
-            await _identityService.UpdateUser(accountModel);
-            return RedirectToAction("Index");
+            var result = await _identityService.UpdateUser(accountModel);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+            return View(model);
         }
 
         [HttpGet]

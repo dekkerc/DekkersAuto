@@ -37,7 +37,7 @@ namespace DekkersAuto.Services.Database
             return RoleManager.Roles.Select(r => r.Name).ToList();
         }
 
-        public async Task<bool> CreateUserAsync(string username, string password, string role)
+        public async Task<IdentityResult> CreateUserAsync(string username, string password, string role)
         {
             var user = new IdentityUser
             {
@@ -49,7 +49,7 @@ namespace DekkersAuto.Services.Database
                 var newUser = await UserManager.FindByNameAsync(user.UserName);
                 var roleResult = await UserManager.AddToRoleAsync(newUser, role);
             }
-            return result.Succeeded;
+            return result;
         }
 
         public async Task<IdentityUser> GetUser(Guid accountId)
@@ -62,12 +62,12 @@ namespace DekkersAuto.Services.Database
             return _db.UserRoles.SingleOrDefault(ur => ur.UserId == user.Id)?.RoleId;
         }
 
-        public async Task UpdateUser(AccountModel model)
+        public async Task<IdentityResult> UpdateUser(AccountModel model)
         {
             var user = await UserManager.FindByIdAsync(model.UserId);
 
             user.UserName = model.Username;
-            await UserManager.UpdateAsync(user);
+            var result = await UserManager.UpdateAsync(user);
             var roles = await UserManager.GetRolesAsync(user);
 
             if (roles.Count == 0)
@@ -80,6 +80,7 @@ namespace DekkersAuto.Services.Database
                 await UserManager.AddToRoleAsync(user, model.Role);
             }
             _db.SaveChanges();
+            return result;
         }
 
         public async Task DeleteUserAsync(string userId)
