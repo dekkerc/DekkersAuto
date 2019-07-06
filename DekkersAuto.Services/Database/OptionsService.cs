@@ -28,7 +28,7 @@ namespace DekkersAuto.Services.Database
                     Id = o.Id,
                     Description = o.Description,
                     ListingId = listingId,
-                    Selected = o.ListingOptions.Any( l => l.ListingId == listingId)
+                    Selected = o.ListingOptions.Any(l => l.ListingId == listingId)
                 })
                 .ToList();
         }
@@ -96,6 +96,13 @@ namespace DekkersAuto.Services.Database
                     (listingOption, option) => option.Description
                 )
                 .ToList();
+        }
+
+        public async Task<Option> CreateOptionAsync(string option)
+        {
+            var newOption = await _db.Options.AddAsync(new Option { Description = option });
+            await _db.SaveChangesAsync();
+            return newOption.Entity;
         }
 
 

@@ -105,6 +105,7 @@
             <h5 class="card-header">Options</h5>
             <div class="card-body">
                 <input name="searchTerm" type="text" id="optionsSearch" class="form-control" placeholder="Search" />
+                <a class="btn btn-primary" id="addOptionButton" style="display:none;">Add Option</a>
                 <div id="searchResults">
                     <partial name="_OptionsList" model="Model.Options" />
                 </div>
@@ -137,6 +138,29 @@
             type: "POST",
             url: "/Inventory/SearchOptions?searchTerm=" + input + "&listingId=" + id,
             success: function (response) {
+                if (response === false) {
+                    $("#addOptionButton").removeAttr("style");
+                    $("#searchResults").html("<div></div>");
+                } else {
+                    $("#searchResults").html(response);
+                }
+            }
+
+        });
+    });
+
+    $("#addOptionButton").on("click", function () {
+        let option = $("#optionsSearch").val();
+        let id = '@Model.ListingId';
+        $.ajax({
+            type: "POST",
+            url: "/Inventory/AddOption",
+            data: {
+                option: option,
+                listingId: id
+            },
+            success: function (response) {
+                $("#addOptionButton").attr("style", "display:none;");
                 $("#searchResults").html(response);
             }
 

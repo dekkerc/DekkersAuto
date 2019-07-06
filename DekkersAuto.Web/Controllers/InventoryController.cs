@@ -50,13 +50,13 @@ namespace DekkersAuto.Web.Controllers
         public async Task<IActionResult> Create()
         {
             var listing = await _listingService.AddListingAsync();
-            
-            return Redirect("CreateListing?listingId=" + listing.Id.ToString());
+
+            return Redirect("Edit?listingId=" + listing.Id.ToString());
         }
 
         public async Task<IActionResult> Edit(Guid listingId)
         {
-           
+
             var listing = await _listingService.GetListing(listingId);
 
             var viewModel = new CreateInventoryViewModel
@@ -91,9 +91,9 @@ namespace DekkersAuto.Web.Controllers
                 BodyType = viewModel.BodyType,
                 FuelType = viewModel.FuelType,
                 Doors = viewModel.Doors,
-                Seats =viewModel.Seats,
+                Seats = viewModel.Seats,
                 Title = viewModel.Title,
-                Description =viewModel.Description,
+                Description = viewModel.Description,
                 Price = viewModel.Price
             };
 
@@ -115,7 +115,7 @@ namespace DekkersAuto.Web.Controllers
         {
             await _listingService.DeleteListingAsync(listingId);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> Details(Guid listingId)
         {
@@ -152,6 +152,23 @@ namespace DekkersAuto.Web.Controllers
         public IActionResult SearchOptions(string searchTerm, Guid listingId)
         {
             var viewModel = _optionsService.SearchOptions(searchTerm, listingId);
+            if (viewModel.Any())
+            {
+                return PartialView("_OptionsList", viewModel);
+            }
+            return Ok(false);
+
+        }
+
+        public async Task<IActionResult> AddOption(string option, Guid listingId)
+        {
+            var optionItem = await _optionsService.CreateOptionAsync(option);
+
+            if (optionItem != null)
+            {
+                await _optionsService.UpdateOption(optionItem.Id, listingId);
+            }
+            var viewModel = _optionsService.SearchOptions(option, listingId);
 
             return PartialView("_OptionsList", viewModel);
         }
@@ -178,8 +195,8 @@ namespace DekkersAuto.Web.Controllers
             await _imageService.SetFeatureImage(imageId, listingId);
 
             var images = _imageService.GetListingImages(listingId);
-            
-            return PartialView("_ImagesList", images.Select(image => new ImageModel { Source = image.Source, IsFeature = image.IsFeature, Id = image.ImageId, ListingId = image.ListingId}).ToList());
+
+            return PartialView("_ImagesList", images.Select(image => new ImageModel { Source = image.Source, IsFeature = image.IsFeature, Id = image.ImageId, ListingId = image.ListingId }).ToList());
 
         }
 
