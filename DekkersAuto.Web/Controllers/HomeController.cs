@@ -34,7 +34,7 @@ namespace DekkersAuto.Web.Controllers
         /// <param name="model">Model containing parameters required to send an email</param>
         public async Task Contact(ContactViewModel model)
         {
-            await _emailService.SendEmail(model.Email, "", model.Message);
+            await _emailService.SendEmail(model.Email, model.Subject, model.Message);
 
         }
 

@@ -7,7 +7,7 @@
                     <div class="alert alert-success" role="alert" style="display:none;" id="successMessage">
                         Message Sent
                     </div>
-                    <form asp-action="Contact" asp-controller="Home" data-ajax="true" data-ajax-success="$('#successMessage').removeAttr('style')">
+                    <form asp-action="Contact" asp-controller="Home" data-ajax="true" data-ajax-begin="beginSend()" data-ajax-success="completeSend()">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input asp-for="Subject" hidden />
                         <div class="form-group">
@@ -21,10 +21,22 @@
                             <span asp-validation-for="Message" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <input type="submit" value="Send" class="btn btn-primary" />
+                            <input type="submit" value="Send" class="btn btn-primary" id="send" />
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+<script type="text/javascript">
+    beginSend = function () {
+        $('#send').prop('disabled', true);
+        $('#send').val('Sending...');
+    }
+    completeSend = function () {
+        $('#successMessage').removeAttr('style');
+        $('#send').prop('disabled', false);
+        $('#send').val('Send');
+    }
+</script>
