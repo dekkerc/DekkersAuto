@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace DekkersAuto.Web.Models.Inventory
+namespace DekkersAuto.Services.Models
 {
     public class ImageModel
     {

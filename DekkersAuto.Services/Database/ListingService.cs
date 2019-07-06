@@ -24,7 +24,7 @@ namespace DekkersAuto.Services.Database
                 {
                     ListingId = l.Id,
                     Description = l.Description,
-                    ImageUrl = l.Images.OrderBy(i => i.IsFeature).FirstOrDefault().ImageString,
+                    ImageUrl = l.Images.OrderByDescending(i => i.IsFeature).FirstOrDefault().ImageString,
                     Title = l.Title,
                     Year = l.Year,
                     Kilometers = l.Kilometers,
@@ -41,7 +41,7 @@ namespace DekkersAuto.Services.Database
                 {
                     ListingId = l.Id,
                     Description = l.Description,
-                    ImageUrl = l.Images.OrderBy(i => i.IsFeature).FirstOrDefault().ImageString,
+                    ImageUrl = l.Images.OrderByDescending(i => i.IsFeature).FirstOrDefault().ImageString,
                     Title = l.Title,
                     Year = l.Year,
                     Kilometers = l.Kilometers,
@@ -79,7 +79,13 @@ namespace DekkersAuto.Services.Database
                 .Select(l => new ListingDetailsImageModel
                 {
                     ListingId = l.Id,
-                    Images = l.Images.Select(i => i.ImageString).ToList(),
+                    Images = l.Images.Select(i => new ImageModel
+                    {
+                        Source = i.ImageString,
+                        IsFeature = i.IsFeature,
+                        Id = i.Id,
+                        ListingId = i.ListingId
+                    }).ToList(),
                     Description = l.Description,
                     Title = l.Title,
                     Seats = l.Seats,

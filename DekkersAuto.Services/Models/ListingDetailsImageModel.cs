@@ -6,6 +6,6 @@ namespace DekkersAuto.Services.Models
 {
     public class ListingDetailsImageModel : ListingDetailsModel
     {
-        public List<string> Images { get; set; }
+        public List<ImageModel> Images { get; set; }
     }
 }

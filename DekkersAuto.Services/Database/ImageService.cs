@@ -59,7 +59,7 @@ namespace DekkersAuto.Services.Database
         {
             return _db.Images
                 .Where(i => i.ListingId == listingId)
-                .OrderBy(i => i.IsFeature)
+                .OrderByDescending(i => i.IsFeature)
                 .Select(i => 
                     new ImageDetailsModel
                     {

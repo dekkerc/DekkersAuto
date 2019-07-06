@@ -47,7 +47,7 @@ namespace DekkersAuto.Web.Controllers
 
             var model = new AccountViewModel();
             var banner = _bannerService.GetBanner();
-            
+
             model.BannerModel = banner;
 
             var user = await _identityService.GetIdentityUserAsync(User);
@@ -209,15 +209,27 @@ namespace DekkersAuto.Web.Controllers
         public async Task<IActionResult> AccountList()
         {
             var user = await _identityService.GetIdentityUserAsync(User);
-            var model = _identityService.GetAccountList(user.Id);
+            var accounts = _identityService.GetAccountList(user.Id);
+            var viewModel = new AccountListViewModel
+            {
+                Accounts = accounts.Select(a =>
+                    new AccountItemViewModel
+                    {
+                        AccountId = a.UserId,
+                        Role = a.Role,
+                        Username = a.Username
+                    })
+                .ToList(),
+                UserId = user.Id
+            };
 
-            return View(model);
+            return View(viewModel);
         }
 
         public IActionResult Banner()
         {
             var banner = _bannerService.GetBanner();
-            
+
             return View(banner);
         }
 

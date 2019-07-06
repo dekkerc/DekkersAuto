@@ -3,6 +3,8 @@
 <div class="card">
     <h5 class="card-header">Manage Accounts <a asp-action="Create" asp-controller="Account" class="btn btn-primary float-right">Create</a></h5>
     <div class="card-body">
+
+        @if (Model.Accounts.Any()) { 
         <table class="table">
             <thead>
                 <tr>
@@ -18,5 +20,6 @@
                 }
             </tbody>
         </table>
+        } 
 </div>
 </div>

@@ -56,6 +56,7 @@ namespace DekkersAuto.Web.Controllers
 
         public async Task<IActionResult> Edit(Guid listingId)
         {
+           
             var listing = await _listingService.GetListing(listingId);
 
             var viewModel = new CreateInventoryViewModel
@@ -177,8 +178,8 @@ namespace DekkersAuto.Web.Controllers
             await _imageService.SetFeatureImage(imageId, listingId);
 
             var images = _imageService.GetListingImages(listingId);
-
-            return PartialView("_ImagesList", images);
+            
+            return PartialView("_ImagesList", images.Select(image => new ImageModel { Source = image.Source, IsFeature = image.IsFeature, Id = image.ImageId, ListingId = image.ListingId}).ToList());
 
         }
 
