@@ -15,7 +15,7 @@ namespace DekkersAuto.Services.Database
 
         public List<ListingListItemModel> FilterListings(FilterModel model)
         {
-            var inventory = _db.Listings.Include(l => l.Images).ToList();
+            var inventory = _db.Listings.Include(l => l.Images).Where(l => l.IsActive).ToList();
 
             if (model.Colour != null)
             {
@@ -47,12 +47,13 @@ namespace DekkersAuto.Services.Database
             }
             return inventory.Select(l => new ListingListItemModel
             {
+                ListingId = l.Id,
                 Description = l.Description,
-                ImageUrl = l.Images.SingleOrDefault(i => i.IsFeature)?.ImageString,
-                Kilometers = l.Kilometers,
-                Year = l.Year,
+                ImageUrl = l.Images.OrderByDescending(i => i.IsFeature).FirstOrDefault().ImageString,
                 Title = l.Title,
-                ListingId = l.Id
+                Year = l.Year,
+                Kilometers = l.Kilometers,
+                Price = l.Price
             }).ToList();
         }
 
