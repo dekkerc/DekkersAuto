@@ -11,7 +11,10 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" asp-controller="Account" asp-action="Index">Account</a>
+                @if(User.IsInRole("Admin"))
+                {
                 <a class="dropdown-item"  asp-controller="Account" asp-action="AccountList">Manage Accounts</a>
+                }
                 <a class="dropdown-item"  asp-controller="Account" asp-action="Banner">Manage Banner</a>
                 <a class="dropdown-item"  asp-controller="Account" asp-action="InProgressListings">In Progress Listings</a>
                 <div class="dropdown-divider"></div>

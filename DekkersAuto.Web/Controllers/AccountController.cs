@@ -266,6 +266,43 @@ namespace DekkersAuto.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult UpdatePassword(Guid userId)
+        {
+            var viewModel = new UpdatePasswordModel
+            {
+                UserId = userId
+            };
+            return PartialView("_UpdatePassword",viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_UpdatePassword", model);
+            }
+            if(model.NewPassword != model.ConfirmPassword)
+            {
+                ModelState.AddModelError("ConfirmPassword", "Must match new password");
+            }
+
+            var result = await _identityService.UpdatePassword(model.UserId, model.OldPassword, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return new EmptyResult();
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            
+            return PartialView("_UpdatePassword", model);
+        }
+
 
     }
 }

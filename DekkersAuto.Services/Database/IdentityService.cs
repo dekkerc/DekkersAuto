@@ -83,6 +83,15 @@ namespace DekkersAuto.Services.Database
             return result;
         }
 
+        public async Task<IdentityResult> UpdatePassword(Guid userId, string oldPassword, string newPassword)
+        {
+            var user = await UserManager.FindByIdAsync(userId.ToString());
+            var result = await UserManager.ChangePasswordAsync(user, oldPassword, newPassword);
+
+            await _db.SaveChangesAsync();
+            return result;
+        }
+
         public async Task DeleteUserAsync(string userId)
         {
             await UserManager.DeleteAsync(await UserManager.FindByIdAsync(userId));
