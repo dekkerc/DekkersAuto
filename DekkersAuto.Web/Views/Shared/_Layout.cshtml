@@ -15,7 +15,7 @@
               crossorigin="anonymous"
               integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE="/>
     </environment>
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/site.css" /><script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.3"></script>
 </head>
 <body>
     <header>
@@ -62,6 +62,14 @@
                         <li class="list-group-item"><span class="font-weight-bold">Saturday</span> By Appointment</li>
                         <li class="list-group-item"><span class="font-weight-bold">Sunday</span> Closed</li>
                     </ul>
+                </div>
+                <div 
+                     class="fb-like" 
+                     data-href="@Url.Action("Index","Home", null, Context.Request.Scheme)"
+                     data-layout="standard"
+                     data-show-faces="true" 
+                     data-share="true">
+
                 </div>
             </div>
             &copy; 2019 - Dekkers Auto
