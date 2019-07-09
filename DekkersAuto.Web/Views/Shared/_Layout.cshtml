@@ -63,11 +63,14 @@
                         <li class="list-group-item"><span class="font-weight-bold">Sunday</span> Closed</li>
                     </ul>
                 </div>
-                <div 
-                     class="fb-like" 
+                <div style="width: 50vw; height: 50vh; position: relative;"
+                     id="myMap">
+                </div>
+
+                <div class="fb-like"
                      data-href="@Url.Action("Index","Home", null, Context.Request.Scheme)"
                      data-layout="standard"
-                     data-show-faces="true" 
+                     data-show-faces="true"
                      data-share="true">
 
                 </div>
@@ -96,8 +99,9 @@
     </environment>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
+    <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol?key=Ajownlvw93nKiTZNamhnU5gOkuTGzaE7dMHviYs_rImLHXzL5_ex4R4Q4k-LdjP3&amp;callback=loadMap" async="" defer=""></script>v
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    <script src="~/js/maps.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
