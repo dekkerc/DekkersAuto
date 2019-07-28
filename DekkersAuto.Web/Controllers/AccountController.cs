@@ -153,6 +153,7 @@ namespace DekkersAuto.Web.Controllers
                         return RedirectToAction("Index", "Home");
                     }
                 }
+                ModelState.AddModelError("", "Could not find username or password");
             }
             return View(model);
         }
