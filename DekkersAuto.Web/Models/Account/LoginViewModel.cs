@@ -21,7 +21,12 @@ namespace DekkersAuto.Web.Models.Account
         /// Gets and sets the Password
         /// Represents the password of the user attempting to login
         /// </summary>
-        [Required, DataType(DataType.Password)]
+        [Required,
+         MinLength(8,
+             ErrorMessage = "Password must be at least 8 characters"),
+         DataType(DataType.Password),
+         RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
+             ErrorMessage = "Password must contain 1 uppercase, 1 lowercase, and 1 number")]
         public string Password { get; set; }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DekkersAuto.Services.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,11 +11,14 @@ namespace DekkersAuto.Web.Models.Inventory
     /// </summary>
     public class InventoryViewModel
     {
+        /// <summary>
+        /// Gets and sets the filter
+        /// </summary>
         public FilterViewModel Filter { get; set; }
         /// <summary>
         /// Gets and sets the InventoryList
         /// Represents the list of individual listings
         /// </summary>
-        public List<InventoryListItemViewModel> InventoryList { get; set; }
+        public List<ListingListItemModel> InventoryList { get; set; }
     }
 }

@@ -1,21 +1,26 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DekkersAuto.Services.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DekkersAuto.Web.Models.Inventory
 {
+    /// <summary>
+    /// Model holding parameters requried to create a listing
+    /// </summary>
     public class CreateInventoryViewModel: ListingBase
     {
-        public List<SelectListItem> MakeList { get; set; }
-        public List<SelectListItem> ModelList { get; set; }
+        /// <summary>
+        /// Gets and sets the Transmission List
+        /// </summary>
         public List<SelectListItem> TransmissionList { get; set; }
-        public List<SelectListItem> ColourList { get; set; }
+        /// <summary>
+        /// Gets and Sets the Selected Options
+        /// </summary>
         public List<Guid> SelectedOptions { get; set; }
-        public List<OptionModel> Options { get; set; }
-        public List<ImageModel> ImageModels { get; set; }
+        /// <summary>
+        /// Gets and sets the options
+        /// </summary>
+        public List<SelectedOptionModel> Options { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model DekkersAuto.Web.Models.Inventory.ImageModel
+﻿@model DekkersAuto.Services.Models.ImageModel
 
 <div id="@Model.Id" style="background-color:@(Model.IsFeature?"red":"blue")">
     <img src="@Model.Source" class="img-thumbnail col-4" />
@@ -6,8 +6,10 @@
        class="btn btn-danger">
         Remove
     </a>
-    <a asp-action="SetFeatureImage" asp-all-route-data='new Dictionary<string, string> { { "imageId", Model.Id.ToString() }, { "listingId", Model.ListingId.ToString() } }' data-ajax="true" data-ajax-mode="replace" data-ajax-update="#imageList"
+    <a asp-action="SetFeatureImage" asp-all-route-data='new Dictionary<string, string> { { "imageId", Model.Id.ToString() }, { "listingId", Model.ListingId.ToString() } }' 
+       data-ajax="true" data-ajax-mode="replace" data-ajax-update="#imageList"
+        data-ajax-success="console.log('here')"
        class="btn btn-info">
         Set Feature
-    </a>
+    </a> 
 </div>

@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DekkersAuto.Services.Database;
+using DekkersAuto.Services.Models;
 using DekkersAuto.Web.Models;
 using DekkersAuto.Web.Models.Account;
-using DekkersAuto.Web.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -48,27 +47,25 @@ namespace DekkersAuto.Web.Controllers
 
             var model = new AccountViewModel();
             var banner = _bannerService.GetBanner();
-            var bannerModel = new BannerViewModel();
-            if(banner!= null)
-            {
-                bannerModel.BannerId = banner.Id;
-                bannerModel.IsActive = banner.IsActive;
-                bannerModel.Text = banner.Text;
-            }
-            model.BannerModel = bannerModel;
+
+            model.BannerModel = banner;
 
             var user = await _identityService.GetIdentityUserAsync(User);
             model.ManageAccountModel = new ManageAccountViewModel
             {
                 Username = user.UserName,
                 Role = _identityService.GetRole(user),
-                RoleTypes = _identityService.GetRoles(),
+                RoleTypes = Util.GetSelectList(_identityService.GetRoles()),
                 UserId = user.Id
             };
 
             var accountList = _identityService.GetAccountList(user.Id);
 
-            model.AccountList = accountList;
+            model.AccountList = new AccountListViewModel
+            {
+                UserId = user.Id,
+                Accounts = accountList.Select(a => new AccountItemViewModel { AccountId = a.UserId, Username = a.Username, Role = a.Role }).ToList()
+            };
 
             return View(model);
         }
@@ -79,13 +76,13 @@ namespace DekkersAuto.Web.Controllers
         /// Populates the Create model with the available user roles
         /// </summary>
         /// <returns>The create view</returns>
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Create()
         {
             var model = new ManageAccountViewModel();
-            model.RoleTypes = _identityService.GetRoles();
-            
+            model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+
             return View(model);
         }
 
@@ -96,18 +93,28 @@ namespace DekkersAuto.Web.Controllers
         /// <param name="model">Model containing details of user to create</param>
         /// <returns>Redirects to the Account index on success</returns>
         [HttpPost]
-        [Authorize(Roles ="Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ManageAccountViewModel model)
         {
 
             if (!ModelState.IsValid)
             {
-                model.RoleTypes = _identityService.GetRoles();
+                model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
                 return View(model);
             }
             var result = await _identityService.CreateUserAsync(model.Username, model.Password, model.Role);
 
-            return RedirectToAction("Index");
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+            return View(model);
         }
 
         /// <summary>
@@ -146,11 +153,12 @@ namespace DekkersAuto.Web.Controllers
                         return RedirectToAction("Index", "Home");
                     }
                 }
+                ModelState.AddModelError("", "Could not find username or password");
             }
             return View(model);
         }
 
-        public IActionResult ManageBanner(BannerViewModel model)
+        public IActionResult ManageBanner(BannerModel model)
         {
 
             if (_bannerService.GetBanner() == null)
@@ -175,18 +183,66 @@ namespace DekkersAuto.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+
+        /// <summary>
+        /// Action to delete a user account
+        /// </summary>
+        /// <param name="userId">Id of user to delete</param>
+        /// <returns></returns>
         public async Task Delete(string userId)
         {
             await _identityService.DeleteUserAsync(userId);
         }
 
+        /// <summary>
+        /// Action to edit an Account
+        /// </summary>
+        /// <param name="model">Model of the account to be edited</param>
+        /// <returns>Redirects to index action on success</returns>
         [HttpPost]
         public async Task<IActionResult> Edit(ManageAccountViewModel model)
         {
-            await _identityService.UpdateUser(model);
-            return RedirectToAction("Index");
+            try
+            {
+
+                if (!ModelState.IsValid)
+                {
+                    model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+                    return View(model);
+                }
+                var accountModel = new AccountModel
+                {
+                    Username = model.Username,
+                    Role = model.Role,
+                    UserId = model.UserId
+                };
+
+                var result = await _identityService.UpdateUser(accountModel);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            catch (Exception e)
+            {
+            }
+            model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+
+            return View(model);
         }
 
+        /// <summary>
+        /// Action to retrieve the edit page
+        /// </summary>
+        /// <param name="userId">ID of user to edit</param>
+        /// <returns>Edit View</returns>
         [HttpGet]
         public async Task<IActionResult> Edit(Guid userId)
         {
@@ -195,39 +251,103 @@ namespace DekkersAuto.Web.Controllers
             {
                 Username = user.UserName,
                 Role = _identityService.GetRole(user),
-                RoleTypes = _identityService.GetRoles(),
+                RoleTypes = Util.GetSelectList(_identityService.GetRoles()),
                 UserId = user.Id
             };
 
             return View(model);
         }
 
+        /// <summary>
+        /// Action to get a list of users
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> AccountList()
         {
             var user = await _identityService.GetIdentityUserAsync(User);
-            var model =_identityService.GetAccountList(user.Id);
+            var accounts = _identityService.GetAccountList(user.Id);
+            var viewModel = new AccountListViewModel
+            {
+                Accounts = accounts.Select(a =>
+                    new AccountItemViewModel
+                    {
+                        AccountId = a.UserId,
+                        Role = a.Role,
+                        Username = a.Username
+                    })
+                .ToList(),
+                UserId = user.Id
+            };
 
-            return View(model);
+            return View(viewModel);
         }
 
+        /// <summary>
+        /// Action to retrieve the edit banner page
+        /// </summary>
+        /// <returns>Banner to edit</returns>
         public IActionResult Banner()
         {
             var banner = _bannerService.GetBanner();
-            var model = new BannerViewModel();
-            if (banner != null)
-            {
-                model.BannerId = banner.Id;
-                model.IsActive = banner.IsActive;
-                model.Text = banner.Text;
-            }
-            return View(model);
+
+            return View(banner);
         }
 
+        /// <summary>
+        /// Action to retrieve list of inactive listings
+        /// </summary>
         public IActionResult InProgressListings()
         {
             var model = _listingService.GetInactiveInventoryList();
 
             return View(model);
+        }
+
+        /// <summary>
+        /// Action to retrieve update password view
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult UpdatePassword(Guid userId)
+        {
+            var viewModel = new UpdatePasswordModel
+            {
+                UserId = userId
+            };
+            return PartialView("_UpdatePassword", viewModel);
+        }
+
+        /// <summary>
+        /// Action to update user password
+        /// </summary>
+        /// <param name="model">Model containing values of password to update</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_UpdatePassword", model);
+            }
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                ModelState.AddModelError("ConfirmPassword", "Must match new password");
+            }
+
+            var result = await _identityService.UpdatePassword(model.UserId, model.OldPassword, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return new EmptyResult();
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return PartialView("_UpdatePassword", model);
         }
 
 

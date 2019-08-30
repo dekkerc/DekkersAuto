@@ -1,4 +1,4 @@
-﻿@model DekkersAuto.Web.Models.Inventory.InventoryListItemViewModel
+﻿@model DekkersAuto.Services.Models.ListingListItemModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 
@@ -6,17 +6,17 @@
 <div id="@Model.ListingId">
     <div class="card">
         <div class="card-body">
-            <a asp-action="Details" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }' style="text-decoration:none; color:black;">
+            <a asp-action="Details" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }' style="text-decoration:none; color:#888888;">
                 <div class="row">
-                    <div class="col-4">
-                        <img src="@Model.ImageUrl" class="img-fluid img-thumbnail" />
+                    <div class="col-3">
+                        <img src="@Model.ImageUrl" class="img-fluid img-thumbnail listing-image" />
                     </div>
-                    <div class="col-7">
+                    <div class="col-5">
                         <h4>@Model.Title</h4>
                         <p class="col-12 text-truncate">@Model.Description</p>
                         <p class="col-12">@Model.Kilometers km</p>
                     </div>
-                    <div class="col-1">
+                    <div class="col-4 text-right">
                         <h2>$@Model.Price</h2>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
             {
                 <div class="row">
                     <div class="col-12">
-                        <a asp-action="CreateListing" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }' class="btn btn-primary">
+                        <a asp-action="Edit" asp-controller="Inventory" asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }' class="btn btn-primary">
                             Edit
                         </a>
                         <a asp-action="Delete"

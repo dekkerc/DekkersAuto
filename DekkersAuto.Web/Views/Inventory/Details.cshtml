@@ -113,5 +113,10 @@
 
 }
 <br />
-<partial name="_ContactForm" model="new ContactViewModel()" />
-
+<partial name="_ContactForm" model='new ContactViewModel { Subject = Model.Title }' />
+<div class="fb-like"
+     data-href="@Url.Action("Details","Inventory", new { listingId = Model.ListingId }, Context.Request.Scheme)"
+     data-layout="standard"
+     data-show-faces="true"
+     data-share="true">
+</div>

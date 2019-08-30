@@ -1,39 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DekkersAuto.Web.Models;
-using Microsoft.AspNetCore.Authorization;
 using DekkersAuto.Web.Models.Home;
-using DekkersAuto.Web.Services;
+using DekkersAuto.Services.Database;
+using DekkersAuto.Services.Email;
+using DekkersAuto.Services.Models;
 
 namespace DekkersAuto.Web.Controllers
 {
+    /// <summary>
+    /// Controller to handle homepage interactions
+    /// </summary>
     public class HomeController : Controller
     {
-        private DbService _dbService;
         private BannerService _bannerService;
         private IEmailService _emailService;
 
-        public HomeController(DbService dbService, IEmailService emailService, BannerService bannerService)
+        /// <summary>
+        /// Default home constructor
+        /// Taking all required services with dependency injection
+        /// </summary>
+        /// <param name="emailService"></param>
+        /// <param name="bannerService"></param>
+        public HomeController(IEmailService emailService, BannerService bannerService)
         {
-            _dbService = dbService;
             _emailService = emailService;
             _bannerService = bannerService;
         }
+        /// <summary>
+        /// Action to retrieve homepage
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             var banner = _bannerService.GetBanner();
-            var viewModel = new BannerViewModel();
-            if(banner != null)
-            {
-                viewModel.BannerId = banner.Id;
-                viewModel.Text = banner.Text;
-                viewModel.IsActive = banner.IsActive;
-            }
-            return View(viewModel);
+            
+            return View(banner);
         }
         
         /// <summary>
@@ -42,14 +45,8 @@ namespace DekkersAuto.Web.Controllers
         /// <param name="model">Model containing parameters required to send an email</param>
         public async Task Contact(ContactViewModel model)
         {
-            await _emailService.SendEmail(model.Email, "", model.Message);
+            await _emailService.SendEmail(model.Email, model.Subject, model.Message);
 
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

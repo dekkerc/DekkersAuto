@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DekkersAuto.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using DekkersAuto.Web.Services;
 using Autofac;
 using DekkersAuto.Dependencies;
+using DekkersAuto.Database;
 
 namespace DekkersAuto.Web
 {
@@ -41,7 +36,8 @@ namespace DekkersAuto.Web
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    option => option.EnableRetryOnFailure()));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -56,13 +52,7 @@ namespace DekkersAuto.Web
                options.Password.RequireLowercase = true;
            });
 
-            services.AddScoped<DbService>();
-            services.AddScoped<ImageService>();
-            services.AddScoped<BannerService>();
-            services.AddScoped<ListingService>();
-            services.AddScoped<OptionsService>();
-            services.AddScoped<IdentityService>();
-            services.AddTransient<IEmailService, EmailService>();
+      
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -90,7 +80,7 @@ namespace DekkersAuto.Web
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-            CreateUserRoles(services).Wait();
+            //CreateUserRoles(services).Wait();
 
             app.UseMvc(routes =>
             {
