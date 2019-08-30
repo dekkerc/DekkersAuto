@@ -1,10 +1,6 @@
 ﻿using Autofac;
-using DekkersAuto.Services;
 using DekkersAuto.Services.Database;
 using DekkersAuto.Services.Email;
-using DekkersAuto.Services.Services;
-using System;
-using System.Net.Http;
 
 namespace DekkersAuto.Dependencies
 {

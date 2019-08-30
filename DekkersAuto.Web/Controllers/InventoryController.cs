@@ -3,11 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DekkersAuto.Services.Database;
 using DekkersAuto.Services.Models;
-using DekkersAuto.Services.Services;
 using DekkersAuto.Web.Models.Inventory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DekkersAuto.Web.Controllers
 {
