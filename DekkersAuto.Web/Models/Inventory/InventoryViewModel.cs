@@ -11,6 +11,9 @@ namespace DekkersAuto.Web.Models.Inventory
     /// </summary>
     public class InventoryViewModel
     {
+        /// <summary>
+        /// Gets and sets the filter
+        /// </summary>
         public FilterViewModel Filter { get; set; }
         /// <summary>
         /// Gets and sets the InventoryList

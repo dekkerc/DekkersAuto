@@ -8,12 +8,20 @@ using System.Threading.Tasks;
 
 namespace DekkersAuto.Services.Database
 {
+    /// <summary>
+    /// Service for handling all image related db interactions
+    /// </summary>
     public class ImageService : DbServiceBase
     {
         public ImageService(ApplicationDbContext db) : base(db)
         {
         }
 
+        /// <summary>
+        /// Deletes pan image by image id
+        /// </summary>
+        /// <param name="imageId"></param>
+        /// <returns></returns>
         public async Task DeleteImageAsync(Guid imageId)
         {
             var image = await _db.Images.FindAsync(imageId);
@@ -23,6 +31,13 @@ namespace DekkersAuto.Services.Database
                 await _db.SaveChangesAsync();
             }
         }
+
+        /// <summary>
+        /// Sets the feature image for a listing
+        /// </summary>
+        /// <param name="imageId"></param>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public async Task SetFeatureImage(Guid imageId, Guid listingId)
         {
             var listingImages = _db.Images.Where(i => i.ListingId == listingId);
@@ -42,6 +57,12 @@ namespace DekkersAuto.Services.Database
             await _db.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Adds an image to a listing
+        /// </summary>
+        /// <param name="listingId"></param>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public async Task<Image> AddImageToListingAsync(Guid listingId, string image)
         {
             var listingImage = await _db.Images.AddAsync(new Image
@@ -54,16 +75,20 @@ namespace DekkersAuto.Services.Database
             return listingImage.Entity;
         }
 
-
-        public IEnumerable<ImageDetailsModel> GetListingImages(Guid listingId)
+        /// <summary>
+        /// Gets the images for a listing
+        /// </summary>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
+        public IEnumerable<ImageModel> GetListingImages(Guid listingId)
         {
             return _db.Images
                 .Where(i => i.ListingId == listingId)
                 .OrderByDescending(i => i.IsFeature)
-                .Select(i => 
-                    new ImageDetailsModel
+                .Select(i =>
+                    new ImageModel
                     {
-                        ImageId = i.Id,
+                        Id = i.Id,
                         IsFeature = i.IsFeature,
                         ListingId = i.ListingId,
                         Source = i.ImageString

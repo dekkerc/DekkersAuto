@@ -11,9 +11,18 @@ namespace DekkersAuto.Database.Models
     /// </summary>
     public class Option
     {
+        /// <summary>
+        /// Gets and sets the Id
+        /// </summary>
         [Key]
         public Guid Id { get; set; }
+        /// <summary>
+        /// Gets and sets the Description
+        /// </summary>
         public string Description { get; set; }
+        /// <summary>
+        /// Gets and sets the ListingOptions
+        /// </summary>
         public virtual ICollection<ListingOption> ListingOptions { get; set; }
     }
 }

@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace DekkersAuto.Services.Database
 {
+    /// <summary>
+    /// Service for handling general database interactions
+    /// </summary>
     public class DbService :DbServiceBase
     {
 
@@ -13,6 +16,11 @@ namespace DekkersAuto.Services.Database
         {
         }
 
+        /// <summary>
+        /// Filters the active listings based on the parameters passed in through the model
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public List<ListingListItemModel> FilterListings(FilterModel model)
         {
             var inventory = _db.Listings.Include(l => l.Images).Where(l => l.IsActive).ToList();

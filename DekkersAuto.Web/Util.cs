@@ -6,28 +6,15 @@ using System.Threading.Tasks;
 
 namespace DekkersAuto.Web
 {
+    /// <summary>
+    /// Utility class holding helper methods
+    /// </summary>
     public static class Util
     {
-        public static List<SelectListItem> GetColours()
-        {
-            return new List<SelectListItem>
-            {
-                new SelectListItem
-                {
-                    Text = "--Select Colour--",
-                    Value = ""
-                },
-                new SelectListItem
-                {
-                    Text = "Red"
-                },
-                new SelectListItem
-                {
-                    Text = "Blue"
-                }
-            };
-        }
-
+        /// <summary>
+        /// Retrieves the list of transmissions
+        /// </summary>
+        /// <returns></returns>
         public static List<SelectListItem> GetTransmissions()
         {
             return new List<SelectListItem>
@@ -43,6 +30,11 @@ namespace DekkersAuto.Web
             };
         }
 
+        /// <summary>
+        /// Converts a list of strings into a list of select list items
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public static List<SelectListItem> GetSelectList(List<string> list)
         {
             return list.Select(i => new SelectListItem { Text = i, Value = i }).ToList();

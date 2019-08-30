@@ -4,6 +4,9 @@ using System.Text;
 
 namespace DekkersAuto.Services.Models
 {
+    /// <summary>
+    /// Model representing the listing details
+    /// </summary>
     public class ListingDetailsModel
     {
         /// <summary>

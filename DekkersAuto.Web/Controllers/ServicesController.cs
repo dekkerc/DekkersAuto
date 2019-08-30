@@ -6,8 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DekkersAuto.Web.Controllers
 {
+    /// <summary>
+    /// Controller handling actions for the Services page
+    /// </summary>
     public class ServicesController : Controller
     {
+        /// <summary>
+        /// Action to display services page
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View();

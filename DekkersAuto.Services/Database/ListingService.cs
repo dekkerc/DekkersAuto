@@ -9,12 +9,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DekkersAuto.Services.Database
 {
+    /// <summary>
+    /// Service to handle all Listing related actions
+    /// </summary>
     public class ListingService : DbServiceBase
     {
         public ListingService(ApplicationDbContext db) : base(db)
         {
         }
 
+        /// <summary>
+        /// Retrieves a list of all active listings
+        /// </summary>
+        /// <returns></returns>
         public List<ListingListItemModel> GetActiveInventoryList()
         {
             return _db.Listings
@@ -32,6 +39,11 @@ namespace DekkersAuto.Services.Database
                 })
                 .ToList();
         }
+
+        /// <summary>
+        /// Retrieves a listing of all inactive listings
+        /// </summary>
+        /// <returns></returns>
         public List<ListingListItemModel> GetInactiveInventoryList()
         {
             return _db.Listings
@@ -50,11 +62,20 @@ namespace DekkersAuto.Services.Database
                 .ToList();
         }
 
+        /// <summary>
+        /// Adds a default, empty listing
+        /// </summary>
+        /// <returns></returns>
         public async Task<Listing> AddListingAsync()
         {
             return await AddListingAsync(new Listing());
         }
 
+        /// <summary>
+        /// Adds a listing to the db
+        /// </summary>
+        /// <param name="listing"></param>
+        /// <returns></returns>
         public async Task<Listing> AddListingAsync(Listing listing)
         {
             var result = await _db.Listings.AddAsync(listing);
@@ -62,6 +83,11 @@ namespace DekkersAuto.Services.Database
             return result.Entity;
         }
 
+        /// <summary>
+        /// Deletes a listing
+        /// </summary>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public async Task DeleteListingAsync(Guid listingId)
         {
             var listing = await _db.Listings.FindAsync(listingId);
@@ -72,6 +98,11 @@ namespace DekkersAuto.Services.Database
             }
         }
 
+        /// <summary>
+        /// Gets a listing by ID
+        /// </summary>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public async Task<ListingDetailsImageModel> GetListing(Guid listingId)
         {
             var listing = await _db.Listings
@@ -105,7 +136,11 @@ namespace DekkersAuto.Services.Database
             return listing;
         }
 
-
+        /// <summary>
+        /// Updates a listing
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         public async Task UpdateListing(ListingDetailsModel viewModel)
         {
             var listing = await _db.Listings.FindAsync(viewModel.ListingId);
@@ -129,6 +164,11 @@ namespace DekkersAuto.Services.Database
             await _db.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Activates a listing by ID
+        /// </summary>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public async Task ActivateListing(Guid listingId)
         {
             var listing = await _db.Listings.FindAsync(listingId);
@@ -139,6 +179,11 @@ namespace DekkersAuto.Services.Database
             await _db.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Deactivates a listing by ID
+        /// </summary>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public async Task DeactivateListing(Guid listingId)
         {
             var listing = await _db.Listings.FindAsync(listingId);

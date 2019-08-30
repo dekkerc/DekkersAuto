@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace DekkersAuto.Web.Models.Account
 {
+    /// <summary>
+    /// Model containing parameters required to update password
+    /// </summary>
     public class UpdatePasswordModel
     {
+        /// <summary>
+        /// ID of user to update password on
+        /// </summary>
         public Guid UserId { get; set; }
+        /// <summary>
+        /// Gets and Sets the old password
+        /// </summary>
         [Required,
         MinLength(8,
             ErrorMessage = "Password must be at least 8 characters"),
@@ -17,6 +26,9 @@ namespace DekkersAuto.Web.Models.Account
             ErrorMessage = "Password must contain 1 uppercase, 1 lowercase, and 1 number"),
         Display(Name = "Old Password")]
         public string OldPassword { get; set; }
+        /// <summary>
+        /// Gets and sets the new password
+        /// </summary>
         [Required,
         MinLength(8,
             ErrorMessage = "Password must be at least 8 characters"),
@@ -25,6 +37,10 @@ namespace DekkersAuto.Web.Models.Account
             ErrorMessage = "Password must contain 1 uppercase, 1 lowercase, and 1 number"),
         Display(Name = "New Password")]
         public string NewPassword { get; set; }
+
+        /// <summary>
+        /// Gets and sets the confirm password
+        /// </summary>
         [Required,
         MinLength(8,
             ErrorMessage = "Password must be at least 8 characters"),

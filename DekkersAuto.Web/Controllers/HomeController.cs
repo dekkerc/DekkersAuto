@@ -9,18 +9,29 @@ using DekkersAuto.Services.Models;
 
 namespace DekkersAuto.Web.Controllers
 {
+    /// <summary>
+    /// Controller to handle homepage interactions
+    /// </summary>
     public class HomeController : Controller
     {
-        private DbService _dbService;
         private BannerService _bannerService;
         private IEmailService _emailService;
 
-        public HomeController(DbService dbService, IEmailService emailService, BannerService bannerService)
+        /// <summary>
+        /// Default home constructor
+        /// Taking all required services with dependency injection
+        /// </summary>
+        /// <param name="emailService"></param>
+        /// <param name="bannerService"></param>
+        public HomeController(IEmailService emailService, BannerService bannerService)
         {
-            _dbService = dbService;
             _emailService = emailService;
             _bannerService = bannerService;
         }
+        /// <summary>
+        /// Action to retrieve homepage
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             var banner = _bannerService.GetBanner();
@@ -36,12 +47,6 @@ namespace DekkersAuto.Web.Controllers
         {
             await _emailService.SendEmail(model.Email, model.Subject, model.Message);
 
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

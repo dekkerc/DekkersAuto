@@ -183,41 +183,66 @@ namespace DekkersAuto.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+
+        /// <summary>
+        /// Action to delete a user account
+        /// </summary>
+        /// <param name="userId">Id of user to delete</param>
+        /// <returns></returns>
         public async Task Delete(string userId)
         {
             await _identityService.DeleteUserAsync(userId);
         }
 
+        /// <summary>
+        /// Action to edit an Account
+        /// </summary>
+        /// <param name="model">Model of the account to be edited</param>
+        /// <returns>Redirects to index action on success</returns>
         [HttpPost]
         public async Task<IActionResult> Edit(ManageAccountViewModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
-                return View(model);
+
+                if (!ModelState.IsValid)
+                {
+                    model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+                    return View(model);
+                }
+                var accountModel = new AccountModel
+                {
+                    Username = model.Username,
+                    Role = model.Role,
+                    UserId = model.UserId
+                };
+
+                var result = await _identityService.UpdateUser(accountModel);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
-            var accountModel = new AccountModel
+            catch (Exception e)
             {
-                Username = model.Username,
-                Role = model.Role,
-                UserId = model.UserId
-            };
-
-            var result = await _identityService.UpdateUser(accountModel);
-
-            if (result.Succeeded)
-            {
-                return RedirectToAction("Index");
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
             }
             model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
+
             return View(model);
         }
 
+        /// <summary>
+        /// Action to retrieve the edit page
+        /// </summary>
+        /// <param name="userId">ID of user to edit</param>
+        /// <returns>Edit View</returns>
         [HttpGet]
         public async Task<IActionResult> Edit(Guid userId)
         {
@@ -233,6 +258,10 @@ namespace DekkersAuto.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Action to get a list of users
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> AccountList()
         {
             var user = await _identityService.GetIdentityUserAsync(User);
@@ -253,6 +282,10 @@ namespace DekkersAuto.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Action to retrieve the edit banner page
+        /// </summary>
+        /// <returns>Banner to edit</returns>
         public IActionResult Banner()
         {
             var banner = _bannerService.GetBanner();
@@ -260,6 +293,9 @@ namespace DekkersAuto.Web.Controllers
             return View(banner);
         }
 
+        /// <summary>
+        /// Action to retrieve list of inactive listings
+        /// </summary>
         public IActionResult InProgressListings()
         {
             var model = _listingService.GetInactiveInventoryList();
@@ -267,6 +303,11 @@ namespace DekkersAuto.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Action to retrieve update password view
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult UpdatePassword(Guid userId)
         {
@@ -274,9 +315,14 @@ namespace DekkersAuto.Web.Controllers
             {
                 UserId = userId
             };
-            return PartialView("_UpdatePassword",viewModel);
+            return PartialView("_UpdatePassword", viewModel);
         }
 
+        /// <summary>
+        /// Action to update user password
+        /// </summary>
+        /// <param name="model">Model containing values of password to update</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordModel model)
         {
@@ -284,7 +330,7 @@ namespace DekkersAuto.Web.Controllers
             {
                 return PartialView("_UpdatePassword", model);
             }
-            if(model.NewPassword != model.ConfirmPassword)
+            if (model.NewPassword != model.ConfirmPassword)
             {
                 ModelState.AddModelError("ConfirmPassword", "Must match new password");
             }
@@ -300,7 +346,7 @@ namespace DekkersAuto.Web.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-            
+
             return PartialView("_UpdatePassword", model);
         }
 

@@ -8,17 +8,29 @@ using DekkersAuto.Services.Models;
 
 namespace DekkersAuto.Services.Database
 {
+    /// <summary>
+    /// Service handling all actions related to options
+    /// </summary>
     public class OptionsService : DbServiceBase
     {
         public OptionsService(ApplicationDbContext db) : base(db)
         {
         }
 
+        /// <summary>
+        /// Retrieves a list of all options
+        /// </summary>
+        /// <returns></returns>
         public List<OptionModel> GetOptions()
         {
             return _db.Options.Select(o => new OptionModel { Id = o.Id, Description = o.Description }).ToList();
         }
 
+        /// <summary>
+        /// Gets all options
+        /// </summary>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public List<SelectedOptionModel> GetOptions(Guid listingId)
         {
             return _db.Options
@@ -33,12 +45,24 @@ namespace DekkersAuto.Services.Database
                 .ToList();
         }
 
+        /// <summary>
+        /// Adds a list of options to a listing
+        /// </summary>
+        /// <param name="carId"></param>
+        /// <param name="selectedOptions"></param>
+        /// <returns></returns>
         public async Task AddOptionsToListingAsync(Guid carId, List<Guid> selectedOptions)
         {
             await _db.ListingOptions.AddRangeAsync(selectedOptions.Select(o => new ListingOption { ListingId = carId, OptionId = o }));
             await _db.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Toggles whether or not an option is applied to a listing
+        /// </summary>
+        /// <param name="optionId"></param>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public async Task<SelectedOptionModel> UpdateOption(Guid optionId, Guid listingId)
         {
             var option = _db.ListingOptions.SingleOrDefault(o => o.OptionId == optionId && o.ListingId == listingId);
@@ -67,6 +91,12 @@ namespace DekkersAuto.Services.Database
             };
         }
 
+        /// <summary>
+        /// Performs a search of listings based on a passed in search parameter
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public List<SelectedOptionModel> SearchOptions(string searchTerm, Guid listingId)
         {
             return _db.Options
@@ -84,7 +114,11 @@ namespace DekkersAuto.Services.Database
                 .ToList();
         }
 
-
+        /// <summary>
+        /// Gets all options applied to a listing
+        /// </summary>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public List<string> GetListingOptions(Guid listingId)
         {
             return _db.ListingOptions
@@ -98,14 +132,16 @@ namespace DekkersAuto.Services.Database
                 .ToList();
         }
 
+        /// <summary>
+        /// Method to create a new option
+        /// </summary>
+        /// <param name="option"></param>
+        /// <returns></returns>
         public async Task<Option> CreateOptionAsync(string option)
         {
             var newOption = await _db.Options.AddAsync(new Option { Description = option });
             await _db.SaveChangesAsync();
             return newOption.Entity;
         }
-
-
-
     }
 }

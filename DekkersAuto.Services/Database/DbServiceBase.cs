@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DekkersAuto.Services.Database
 {
+    /// <summary>
+    /// Base Database service, requires all inheriting services to take a DB context
+    /// </summary>
     public class DbServiceBase
     {
         protected ApplicationDbContext _db;

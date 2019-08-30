@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DekkersAuto.Services.Email
 {
+    /// <summary>
+    /// Service to handle the sending of emails
+    /// </summary>
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _configuration;
@@ -17,6 +20,14 @@ namespace DekkersAuto.Services.Email
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Method to send an email to the Dekkers Auto email 
+        /// Containing the customer's message, and an email address they can be reached at
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="subject"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public async Task SendEmail(string email, string subject, string message)
         {
             using (var client = new SmtpClient())

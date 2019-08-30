@@ -11,25 +11,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DekkersAuto.Web.Controllers
 {
+    /// <summary>
+    /// Controller to handle all interactions concerning inventory management and searching
+    /// </summary>
     public class InventoryController : Controller
     {
         private DbService _dbService;
         private ListingService _listingService;
         private OptionsService _optionsService;
         private ImageService _imageService;
-        private ApiService _apiService;
 
-
-        public InventoryController(DbService service, ListingService listingService, OptionsService optionsService, ImageService imageService, ApiService apiService)
+        /// <summary>
+        /// Constructor for Inventor controller containing all required services
+        /// </summary>
+        /// <param name="service"></param>
+        /// <param name="listingService"></param>
+        /// <param name="optionsService"></param>
+        /// <param name="imageService"></param>
+        public InventoryController(DbService service, ListingService listingService, OptionsService optionsService, ImageService imageService)
         {
             _dbService = service;
             _listingService = listingService;
             _optionsService = optionsService;
             _imageService = imageService;
-            _apiService = apiService;
         }
 
-
+        /// <summary>
+        /// Action to seve the inventory list page
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             var model = new InventoryViewModel
@@ -54,9 +64,14 @@ namespace DekkersAuto.Web.Controllers
             return Redirect("Edit?listingId=" + listing.Id.ToString());
         }
 
+        /// <summary>
+        /// Action to display edit page for a listing
+        /// </summary>
+        /// <param name="listingId">ID of listing to be edited</param>
+        /// <returns></returns>
+        [Authorize]
         public async Task<IActionResult> Edit(Guid listingId)
         {
-
             var listing = await _listingService.GetListing(listingId);
 
             var viewModel = new CreateInventoryViewModel
@@ -111,11 +126,22 @@ namespace DekkersAuto.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Action to delete a listing
+        /// </summary>
+        /// <param name="listingId">ID of listing to be deleted</param>
+        /// <returns></returns>
+        [Authorize]
         public async Task Delete(Guid listingId)
         {
             await _listingService.DeleteListingAsync(listingId);
         }
 
+        /// <summary>
+        /// Action to retrieve the details page for a listing
+        /// </summary>
+        /// <param name="listingId">ID of listing to be displayed</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Details(Guid listingId)
         {
@@ -142,6 +168,12 @@ namespace DekkersAuto.Web.Controllers
             return PartialView("_InventoryListPartial", result);
         }
 
+        /// <summary>
+        /// Action to add or remove an option from a listing
+        /// </summary>
+        /// <param name="optionId">ID of option to be toggled</param>
+        /// <param name="listingId">Listing for option to be add to/removed from</param>
+        /// <returns></returns>
         public async Task<IActionResult> UpdateOption(Guid optionId, Guid listingId)
         {
             var model = await _optionsService.UpdateOption(optionId, listingId);
@@ -149,6 +181,12 @@ namespace DekkersAuto.Web.Controllers
             return PartialView("_Option", model);
         }
 
+        /// <summary>
+        /// Action to retrieve listings based on a search parameter
+        /// </summary>
+        /// <param name="searchTerm">Search parameter</param>
+        /// <param name="listingId"></param>
+        /// <returns></returns>
         public IActionResult SearchOptions(string searchTerm, Guid listingId)
         {
             var viewModel = _optionsService.SearchOptions(searchTerm, listingId);
@@ -160,6 +198,12 @@ namespace DekkersAuto.Web.Controllers
 
         }
 
+        /// <summary>
+        /// Action to create a new option and add it to a listing
+        /// </summary>
+        /// <param name="option">Description of the listing to be created</param>
+        /// <param name="listingId">ID of listing to add the option to</param>
+        /// <returns></returns>
         public async Task<IActionResult> AddOption(string option, Guid listingId)
         {
             var optionItem = await _optionsService.CreateOptionAsync(option);
@@ -173,6 +217,12 @@ namespace DekkersAuto.Web.Controllers
             return PartialView("_OptionsList", viewModel);
         }
 
+        /// <summary>
+        /// Action to add an image to a listing
+        /// </summary>
+        /// <param name="image">Encoded string representing the image</param>
+        /// <param name="listingId">ID of listing to add image to</param>
+        /// <returns></returns>
         public async Task<IActionResult> AddImage(string image, Guid listingId)
         {
             var listingImage = await _imageService.AddImageToListingAsync(listingId, image);
@@ -185,20 +235,30 @@ namespace DekkersAuto.Web.Controllers
                 Id = listingImage.Id
             });
         }
+
+        /// <summary>
+        /// Action to remove an image from a listing
+        /// </summary>
+        /// <param name="imageId">ID of image to be removed</param>
+        /// <returns></returns>
         public async Task RemoveImage(Guid imageId)
         {
             await _imageService.DeleteImageAsync(imageId);
         }
 
+        /// <summary>
+        /// Action to set the feature image of a listing
+        /// </summary>
+        /// <param name="imageId">ID of image to set as feature</param>
+        /// <param name="listingId">Listing of the image</param>
+        /// <returns></returns>
         public async Task<IActionResult> SetFeatureImage(Guid imageId, Guid listingId)
         {
             await _imageService.SetFeatureImage(imageId, listingId);
 
             var images = _imageService.GetListingImages(listingId);
 
-            return PartialView("_ImagesList", images.Select(image => new ImageModel { Source = image.Source, IsFeature = image.IsFeature, Id = image.ImageId, ListingId = image.ListingId }).ToList());
-
+            return PartialView("_ImagesList", images); 
         }
-
     }
 }

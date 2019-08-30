@@ -7,8 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DekkersAuto.Web.Controllers
 {
+    /// <summary>
+    /// Controller handling actions for the About Page
+    /// </summary>
     public class AboutController : Controller
     {
+        /// <summary>
+        /// Displays the About page
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View();
