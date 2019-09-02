@@ -77,7 +77,7 @@ namespace DekkersAuto.Web.Controllers
         /// Populates the Create model with the available user roles
         /// </summary>
         /// <returns>The create view</returns>
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Create()
         {
@@ -94,7 +94,7 @@ namespace DekkersAuto.Web.Controllers
         /// <param name="model">Model containing details of user to create</param>
         /// <returns>Redirects to the Account index on success</returns>
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ManageAccountViewModel model)
         {
 
@@ -159,6 +159,7 @@ namespace DekkersAuto.Web.Controllers
             return View(model);
         }
 
+        [Authorize]
         public IActionResult ManageBanner(BannerModel model)
         {
 
@@ -190,6 +191,7 @@ namespace DekkersAuto.Web.Controllers
         /// </summary>
         /// <param name="userId">Id of user to delete</param>
         /// <returns></returns>
+        [Authorize]
         public async Task Delete(string userId)
         {
             await _identityService.DeleteUserAsync(userId);
@@ -200,6 +202,7 @@ namespace DekkersAuto.Web.Controllers
         /// </summary>
         /// <param name="model">Model of the account to be edited</param>
         /// <returns>Redirects to index action on success</returns>
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(ManageAccountViewModel model)
         {
@@ -244,6 +247,7 @@ namespace DekkersAuto.Web.Controllers
         /// </summary>
         /// <param name="userId">ID of user to edit</param>
         /// <returns>Edit View</returns>
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Edit(Guid userId)
         {
@@ -263,6 +267,7 @@ namespace DekkersAuto.Web.Controllers
         /// Action to get a list of users
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public async Task<IActionResult> AccountList()
         {
             var user = await _identityService.GetIdentityUserAsync(User);
@@ -287,6 +292,7 @@ namespace DekkersAuto.Web.Controllers
         /// Action to retrieve the edit banner page
         /// </summary>
         /// <returns>Banner to edit</returns>
+        [Authorize]
         public IActionResult Banner()
         {
             var banner = _bannerService.GetBanner();
@@ -297,6 +303,7 @@ namespace DekkersAuto.Web.Controllers
         /// <summary>
         /// Action to retrieve list of inactive listings
         /// </summary>
+        [Authorize]
         public IActionResult InProgressListings()
         {
             var model = _listingService.GetInactiveInventoryList();
@@ -309,6 +316,7 @@ namespace DekkersAuto.Web.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public IActionResult UpdatePassword(Guid userId)
         {
@@ -324,6 +332,7 @@ namespace DekkersAuto.Web.Controllers
         /// </summary>
         /// <param name="model">Model containing values of password to update</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordModel model)
         {
