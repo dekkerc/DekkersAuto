@@ -4,8 +4,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DekkersAuto.Database;
+using DekkersAuto.Database.Models;
 using DekkersAuto.Services.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing;
 
 namespace DekkersAuto.Services.Database
 {
@@ -32,6 +34,8 @@ namespace DekkersAuto.Services.Database
         /// </summary>
         private SignInManager<IdentityUser> _signInManager;
 
+
+
         /// <summary>
         /// Identity service constructor accepting all required services
         /// </summary>
@@ -39,7 +43,11 @@ namespace DekkersAuto.Services.Database
         /// <param name="userManager"></param>
         /// <param name="signInManager"></param>
         /// <param name="db"></param>
-        public IdentityService(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ApplicationDbContext db) : base(db)
+        public IdentityService(RoleManager<IdentityRole> roleManager,
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            ApplicationDbContext db)
+            : base(db)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -82,7 +90,7 @@ namespace DekkersAuto.Services.Database
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns></returns>
-        public async Task<IdentityUser> GetUser(Guid accountId)
+        public async Task<IdentityUser> GetUserAsync(Guid accountId)
         {
             return await _userManager.FindByIdAsync(accountId.ToString());
         }
@@ -210,5 +218,79 @@ namespace DekkersAuto.Services.Database
             await _signInManager.SignOutAsync();
         }
 
+        /// <summary>
+        /// Gets the email address for a user
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IdentityUser> GetUserAsync(string userName)
+        {
+            var user = _userManager.Users.SingleOrDefault(x => x.UserName == userName || x.Email == userName);
+            if (user != null && !string.IsNullOrEmpty(user.Email))
+                return user;
+            return null;
+        }
+
+        /// <summary>
+        /// Resets a user's password
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public async Task<bool> ResetPassword(string userName, string password, Guid resetId)
+        {
+            var user = _userManager.Users.SingleOrDefault(x => x.UserName == userName);
+            if (user == null)
+            {
+                return false;
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, password);
+
+            if (result.Succeeded)
+            {
+                _db.ResetPasswordLinks.Remove(_db.ResetPasswordLinks.Find(resetId));
+            }
+            await _db.SaveChangesAsync();
+            
+            return result.Succeeded;
+        }
+
+        public async Task<Guid> GenerateResetPasswordLink(IdentityUser user)
+        {
+            var resetRecord = new ResetPasswordLink
+            {
+                User = user,
+                Timestamp = DateTime.Now
+            };
+
+            var entry = await _db.ResetPasswordLinks.AddAsync(resetRecord);
+            await _db.SaveChangesAsync();
+            return entry.Entity.Id;
+        }
+
+        public async Task<ResetPasswordModel> GetResetPasswordModelAsync(Guid resetId)
+        {
+            var resetModel = await _db.ResetPasswordLinks.FindAsync(resetId);
+
+            if (resetModel != null)
+            {
+                if (DateTime.Now.AddDays(1) > resetModel.Timestamp)
+                {
+
+                    return new ResetPasswordModel
+                    {
+                        IsValid = true,
+                        UserName = (await _userManager.FindByIdAsync(resetModel.UserId)).UserName,
+                        ResetId = resetId
+                    };
+                }
+                else
+                {
+                    _db.ResetPasswordLinks.Remove(resetModel);
+                }
+            }
+
+            return new ResetPasswordModel { IsValid = false, ResetId = resetId };
+        }
     }
 }

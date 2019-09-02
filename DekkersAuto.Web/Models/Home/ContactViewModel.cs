@@ -15,7 +15,7 @@ namespace DekkersAuto.Web.Models.Home
         /// Gets and sets the Email
         /// Represents the email address the reply should go to
         /// </summary>
-        [Required, DataType(DataType.EmailAddress)]
+        [Required, DataType(DataType.EmailAddress, ErrorMessage = "The Email Address is not valid")]
         public string Email { get; set; }
         /// <summary>
         /// Gets and sets the Message

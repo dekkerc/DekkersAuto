@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DekkersAuto.Services.Database;
+using DekkersAuto.Services.Email;
 using DekkersAuto.Services.Models;
 using DekkersAuto.Web.Models;
 using DekkersAuto.Web.Models.Account;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 
 namespace DekkersAuto.Web.Controllers
 {
@@ -24,18 +26,30 @@ namespace DekkersAuto.Web.Controllers
         private BannerService _bannerService;
 
         private ListingService _listingService;
+        /// <summary>
+        /// Represents the link generator
+        /// </summary>
+        private LinkGenerator _linkGenerator;
 
+        private IEmailService _emailService;
         /// <summary>
         /// Default constructor. Has services passed in through dependency injection
         /// </summary>
         /// <param name="userManager">The user manager for IdentityUsers</param>
         /// <param name="roleManager">The role manager for IdentityRoles</param>
-        public AccountController(DbService dbService, IdentityService identityService, BannerService bannerService, ListingService listingService)
+        public AccountController(DbService dbService,
+            IdentityService identityService,
+            BannerService bannerService,
+            ListingService listingService,
+            IEmailService emailService,
+            LinkGenerator linkGenerator)
         {
             _dbService = dbService;
             _identityService = identityService;
             _bannerService = bannerService;
             _listingService = listingService;
+            _emailService = emailService;
+            _linkGenerator = linkGenerator;
         }
 
         /// <summary>
@@ -251,7 +265,7 @@ namespace DekkersAuto.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid userId)
         {
-            var user = await _identityService.GetUser(userId);
+            var user = await _identityService.GetUserAsync(userId);
             var model = new ManageAccountViewModel
             {
                 Username = user.UserName,
@@ -361,5 +375,71 @@ namespace DekkersAuto.Web.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string userName)
+        {
+            var user = await _identityService.GetUserAsync(userName);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Could not find email for username");
+                return View();
+            }
+
+            var resetId = await _identityService.GenerateResetPasswordLink(user);
+
+            var resetLink = _linkGenerator.GetPathByAction("ResetPassword", "Account", resetId);
+
+            await _emailService.SendForgotPasswordEmailAsync(user.Email, user.UserName, resetLink);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(Guid resetId)
+        {
+            var resetModel = await _identityService.GetResetPasswordModelAsync(resetId);
+
+            if (resetModel.IsValid)
+            {
+                return View(new ResetPasswordViewModel
+                {
+                    UserName = resetModel.UserName,
+                    IsValid = true,
+                    ResetId = resetModel.ResetId
+                });
+            }
+
+            return View(new ResetPasswordModel { IsValid = false });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (model.ConfirmPassword != model.Password)
+            {
+                ModelState.AddModelError("ConfirmPassword", "Must match password");
+                return View(model);
+            }
+
+            if (await _identityService.ResetPassword(model.UserName, model.Password, model.ResetId))
+            {
+                return RedirectToAction("Login");
+            }
+
+            ModelState.AddModelError("ConfirmPassword", "Reset failed");
+            return View(model);
+        }
     }
 }

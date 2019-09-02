@@ -46,5 +46,11 @@ namespace DekkersAuto.Web.Models.Account
         /// Represents the unique ID of the user
         /// </summary>
         public string UserId { get; set; }
+
+        /// <summary>
+        /// Gets and sets the email
+        /// </summary>
+        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
+        public string Email { get; set; }
     }
 }
