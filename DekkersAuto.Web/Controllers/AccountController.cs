@@ -6,6 +6,7 @@ using DekkersAuto.Services.Models;
 using DekkersAuto.Web.Models;
 using DekkersAuto.Web.Models.Account;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 

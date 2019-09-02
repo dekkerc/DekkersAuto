@@ -198,6 +198,7 @@ namespace DekkersAuto.Services.Database
         /// <returns></returns>
         public async Task<SignInResult> SignInAsync(string username, string password)
         {
+            _userManager.GetUserNameAsync
             return await _signInManager.PasswordSignInAsync(username, password, false, false);
         }
 

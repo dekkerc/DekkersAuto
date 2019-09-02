@@ -80,7 +80,7 @@ namespace DekkersAuto.Web
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-            //CreateUserRoles(services).Wait();
+            CreateUserRoles(services).Wait();
 
             app.UseMvc(routes =>
             {
