@@ -70,11 +70,12 @@ namespace DekkersAuto.Services.Database
         /// <param name="password"></param>
         /// <param name="role"></param>
         /// <returns></returns>
-        public async Task<IdentityResult> CreateUserAsync(string username, string password, string role)
+        public async Task<IdentityResult> CreateUserAsync(string username, string password, string role, string email)
         {
             var user = new IdentityUser
             {
-                UserName = username
+                UserName = username,
+                Email = email
             };
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
@@ -115,6 +116,7 @@ namespace DekkersAuto.Services.Database
             var user = await _userManager.FindByIdAsync(model.UserId);
 
             user.UserName = model.Username;
+            user.Email = model.Email;
             var result = await _userManager.UpdateAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
 

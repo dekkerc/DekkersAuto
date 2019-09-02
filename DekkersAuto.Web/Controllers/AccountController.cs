@@ -117,7 +117,7 @@ namespace DekkersAuto.Web.Controllers
                 model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
                 return View(model);
             }
-            var result = await _identityService.CreateUserAsync(model.Username, model.Password, model.Role);
+            var result = await _identityService.CreateUserAsync(model.Username, model.Password, model.Role, model.Email);
 
             if (result.Succeeded)
             {
@@ -222,7 +222,6 @@ namespace DekkersAuto.Web.Controllers
         {
             try
             {
-
                 if (!ModelState.IsValid)
                 {
                     model.RoleTypes = Util.GetSelectList(_identityService.GetRoles());
@@ -232,7 +231,8 @@ namespace DekkersAuto.Web.Controllers
                 {
                     Username = model.Username,
                     Role = model.Role,
-                    UserId = model.UserId
+                    UserId = model.UserId,
+                    Email = model.Email
                 };
 
                 var result = await _identityService.UpdateUser(accountModel);
@@ -271,7 +271,8 @@ namespace DekkersAuto.Web.Controllers
                 Username = user.UserName,
                 Role = _identityService.GetRole(user),
                 RoleTypes = Util.GetSelectList(_identityService.GetRoles()),
-                UserId = user.Id
+                UserId = user.Id,
+                Email = user.Email
             };
 
             return View(model);
