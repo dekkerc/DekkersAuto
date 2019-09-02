@@ -59,13 +59,13 @@ namespace DekkersAuto.Web.Models.Inventory
         /// <summary>
         /// Gets and sets the BodyType
         /// </summary>
-        [Display(Name = "Body Type", ResourceType = typeof(Locale))]
+        [Display(Name = "BodyType", ResourceType = typeof(Locale))]
         public string BodyType { get; set; }
 
         /// <summary>
         /// Gets and sets the FuelType
         /// </summary>
-        [Display(Name = "Fuel Type", ResourceType = typeof(Locale))]
+        [Display(Name = "FuelType", ResourceType = typeof(Locale))]
         public string FuelType { get; set; }
 
         /// <summary>
