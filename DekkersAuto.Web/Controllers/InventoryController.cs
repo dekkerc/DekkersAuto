@@ -75,6 +75,8 @@ namespace DekkersAuto.Web.Controllers
             var viewModel = new CreateInventoryViewModel
             {
                 TransmissionList = Util.GetTransmissions(),
+                DriveTrainList = Util.GetDriveTrains(),
+                FuelTypeList = Util.GetFuelType(),
                 Options = _optionsService.GetOptions(listingId)
             };
 
@@ -115,6 +117,8 @@ namespace DekkersAuto.Web.Controllers
             if (!ModelState.IsValid)
             {
                 viewModel.TransmissionList = Util.GetTransmissions();
+                viewModel.DriveTrainList = Util.GetDriveTrains();
+                viewModel.FuelTypeList = Util.GetFuelType();
                 viewModel.Options = _optionsService.GetOptions(viewModel.ListingId);
                 return View(viewModel);
             }

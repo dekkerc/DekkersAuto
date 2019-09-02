@@ -15,6 +15,14 @@ namespace DekkersAuto.Web.Models.Inventory
         /// </summary>
         public List<SelectListItem> TransmissionList { get; set; }
         /// <summary>
+        /// Gets and sets the FuelType List
+        /// </summary>
+        public List<SelectListItem> FuelTypeList { get; set; }
+        /// <summary>
+        /// Gets and sets the DriveTrain List
+        /// </summary>
+        public List<SelectListItem> DriveTrainList { get; set; }
+        /// <summary>
         /// Gets and Sets the Selected Options
         /// </summary>
         public List<Guid> SelectedOptions { get; set; }
