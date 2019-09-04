@@ -34,8 +34,7 @@
                            asp-all-route-data='new Dictionary<string, string> { ["listingId"] = Model.ListingId.ToString() }'
                            class="btn btn-danger"
                            data-ajax="true"
-                           data-ajax-mode="replace"
-                           data-ajax-update="#@Model.ListingId">
+                           data-ajax-success="$('#@Model.ListingId').remove()">
                             Delete
                         </a>
                     </div>

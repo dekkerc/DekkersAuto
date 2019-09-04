@@ -1,15 +1,18 @@
 ﻿@model DekkersAuto.Services.Models.ImageModel
 
-<div id="@Model.Id" style="background-color:@(Model.IsFeature?"red":"blue")">
+<div id="@Model.Id">
     <img src="@Model.Source" class="img-thumbnail col-4" />
-    <a asp-action="RemoveImage" asp-all-route-data='new Dictionary<string, string> { { "imageId", Model.Id.ToString() } }' data-ajax="true" data-ajax-mode="replace" data-ajax-update="#@Model.Id"
+    <a asp-action="RemoveImage" asp-all-route-data='new Dictionary<string, string> { { "imageId", Model.Id.ToString() } }' data-ajax="true" data-ajax-mode="replace" 
+       data-ajax-success="$('#@Model.Id').remove()"
        class="btn btn-danger">
         Remove
     </a>
+    @if (!Model.IsFeature)
+    {
     <a asp-action="SetFeatureImage" asp-all-route-data='new Dictionary<string, string> { { "imageId", Model.Id.ToString() }, { "listingId", Model.ListingId.ToString() } }' 
        data-ajax="true" data-ajax-mode="replace" data-ajax-update="#imageList"
-        data-ajax-success="console.log('here')"
        class="btn btn-info">
         Set Feature
     </a> 
+    }
 </div>
