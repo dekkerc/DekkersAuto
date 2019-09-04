@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<h1>Create Listing</h1>
 
 <hr />
 <form asp-action="Create" method="POST" enctype="multipart/form-data">
@@ -49,7 +49,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="DriveTrain" class="control-label"></label>
-                        <input asp-for="DriveTrain" class="form-control" />
+                        <select asp-for="DriveTrain" asp-items="Model.DriveTrainList" class="form-control"></select>
                         <span asp-validation-for="DriveTrain" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -59,7 +59,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="FuelType" class="control-label"></label>
-                        <input asp-for="FuelType" class="form-control" />
+                        <select asp-for="FuelType" asp-items="Model.FuelTypeList" class="form-control"></select>
                         <span asp-validation-for="FuelType" class="text-danger"></span>
                     </div>
                     <div class="form-group">

@@ -53,5 +53,31 @@ namespace DekkersAuto.Services.Email
             }
             }
         }
+
+        public async Task SendForgotPasswordEmailAsync(string email, string userName, string resetLink)
+        {
+            using (var client = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = _configuration["Email:Email"],
+                    Password = _configuration["Email:Password"]
+                };
+
+                client.Credentials = credential;
+                client.Host = _configuration["Email:Host"];
+                client.Port = int.Parse(_configuration["Email:Port"]);
+                client.EnableSsl = true;
+
+                using (var emailMessage = new MailMessage())
+                {
+                    emailMessage.To.Add(new MailAddress(email));
+                    emailMessage.From = new MailAddress(_configuration["Email:Email"]);
+                    emailMessage.Subject = "Password Reset";
+                    emailMessage.Body = $"";
+                    client.Send(emailMessage);
+                }
+            }
+        }
     }
 }

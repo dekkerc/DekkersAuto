@@ -21,5 +21,9 @@ namespace DekkersAuto.Services.Models
         /// Gets and sets the role
         /// </summary>
         public string Role { get; set; }
+        /// <summary>
+        /// Gets and sets the Email
+        /// </summary>
+        public string Email { get; set; }
     }
 }

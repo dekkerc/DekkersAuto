@@ -31,6 +31,64 @@ namespace DekkersAuto.Web
         }
 
         /// <summary>
+        /// Retrieves the list of drivetrains
+        /// </summary>
+        /// <returns></returns>
+        public static List<SelectListItem> GetDriveTrains()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Text = "2WD"
+                },
+                new SelectListItem
+                {
+                    Text = "AWD"
+                },
+                new SelectListItem
+                {
+                    Text = "FWD"
+                },
+                new SelectListItem
+                {
+                    Text = "RWD"
+                },
+                new SelectListItem
+                {
+                    Text = "4x4"
+                }
+            };
+        }
+
+        /// <summary>
+        /// Retrieves the list of Fuel Types
+        /// </summary>
+        /// <returns></returns>
+        public static List<SelectListItem> GetFuelType()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Text = "Gas"
+                },
+                new SelectListItem
+                {
+                    Text = "Diesel"
+                },
+                new SelectListItem
+                {
+                    Text = "Hybrid"
+                },
+                new SelectListItem
+                {
+                    Text = "Electric"
+                }
+            };
+        }
+
+        /// <summary>
         /// Converts a list of strings into a list of select list items
         /// </summary>
         /// <param name="list"></param>
