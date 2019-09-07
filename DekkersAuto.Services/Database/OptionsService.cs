@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using DekkersAuto.Database;
 using DekkersAuto.Database.Models;
 using DekkersAuto.Services.Models;
-
+//I, Christopher Dekker, student number 000311337, certify that all code
+//submitted is my own work; that I have not copied it from any other source
+//I also certify that I have not allowed by work to be copied by others
 namespace DekkersAuto.Services.Database
 {
     /// <summary>
