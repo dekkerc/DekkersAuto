@@ -19,8 +19,6 @@ namespace DekkersAuto.Database
         public DbSet<Image> Images { get; set; }
         public DbSet<ListingOption> ListingOptions { get; set; }
         public DbSet<Option> Options { get; set; }
-        public DbSet<Model> Models { get; set; }
-        public DbSet<Make> Makes { get; set; }
         public DbSet<ResetPasswordLink> ResetPasswordLinks { get; set; }
     }
 }
