@@ -27,12 +27,6 @@ namespace DekkersAuto.Web.Controllers
 
         private ListingService _listingService;
         /// <summary>
-        /// Represents the link generator
-        /// </summary>
-        private LinkGenerator _linkGenerator;
-
-        private IEmailService _emailService;
-        /// <summary>
         /// Default constructor. Has services passed in through dependency injection
         /// </summary>
         /// <param name="userManager">The user manager for IdentityUsers</param>
@@ -40,16 +34,12 @@ namespace DekkersAuto.Web.Controllers
         public AccountController(DbService dbService,
             IdentityService identityService,
             BannerService bannerService,
-            ListingService listingService,
-            IEmailService emailService,
-            LinkGenerator linkGenerator)
+            ListingService listingService)
         {
             _dbService = dbService;
             _identityService = identityService;
             _bannerService = bannerService;
             _listingService = listingService;
-            _emailService = emailService;
-            _linkGenerator = linkGenerator;
         }
 
         /// <summary>
@@ -373,74 +363,6 @@ namespace DekkersAuto.Web.Controllers
             }
 
             return PartialView("_UpdatePassword", model);
-        }
-
-
-        [HttpGet]
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ForgotPassword(string userName)
-        {
-            var user = await _identityService.GetUserAsync(userName);
-
-            if (user == null)
-            {
-                ModelState.AddModelError("", "Could not find email for username");
-                return View();
-            }
-
-            var resetId = await _identityService.GenerateResetPasswordLink(user);
-
-            var resetLink = _linkGenerator.GetPathByAction("ResetPassword", "Account", resetId);
-
-            await _emailService.SendForgotPasswordEmailAsync(user.Email, user.UserName, resetLink);
-
-            return RedirectToAction("Index", "Home");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ResetPassword(Guid resetId)
-        {
-            var resetModel = await _identityService.GetResetPasswordModelAsync(resetId);
-
-            if (resetModel.IsValid)
-            {
-                return View(new ResetPasswordViewModel
-                {
-                    UserName = resetModel.UserName,
-                    IsValid = true,
-                    ResetId = resetModel.ResetId
-                });
-            }
-
-            return View(new ResetPasswordModel { IsValid = false });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            if (model.ConfirmPassword != model.Password)
-            {
-                ModelState.AddModelError("ConfirmPassword", "Must match password");
-                return View(model);
-            }
-
-            if (await _identityService.ResetPassword(model.UserName, model.Password, model.ResetId))
-            {
-                return RedirectToAction("Login");
-            }
-
-            ModelState.AddModelError("ConfirmPassword", "Reset failed");
-            return View(model);
         }
     }
 }

@@ -18,11 +18,5 @@ namespace DekkersAuto.Services.Email
         /// <param name="message"></param>
         /// <returns></returns>
         Task SendEmail(string email, string subject, string message);
-
-        /// <summary>
-        /// Sends the forgot password email
-        /// </summary>
-        /// <returns></returns>
-        Task SendForgotPasswordEmailAsync(string email, string userName, string resetLink);
     }
 }
